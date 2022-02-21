@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import ReactDOM from "react-dom";
 import Box from "@mui/material/Box";
 import { Button, Stack, Typography } from "@mui/material";
 import LoginModal from "../LoginModal/LoginModal";
 import RegisterModal from "../RegisterModal/RegisterModal";
 import { endpoints } from "../../constants/endpoints";
 import UserContext from "../Context/UserContext";
-import { styleNavbarContent } from "./Styles";
-import ReactDOM from "react-dom";
+import * as styles from "./Styles";
 
 export default function Navbar(props) {
   const { user, setUser } = useContext(UserContext);
@@ -14,6 +15,9 @@ export default function Navbar(props) {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+  const portalElement = document.getElementById("overlays");
 
   const handleSignInClick = () => {
     setError(null);
@@ -111,7 +115,9 @@ export default function Navbar(props) {
       });
   };
 
-  const portalElement = document.getElementById("overlays");
+  const handleGetQuote = () => {
+    navigate("/stocks/get");
+  };
 
   return (
     <>
@@ -137,13 +143,15 @@ export default function Navbar(props) {
           />,
           portalElement
         )}
-      <Box sx={styleNavbarContent}>
-        <Box sx={{ padding: "5px" }}>
+      <Box sx={styles.styleNavbar}>
+        <Box>
           <Typography variant="h5">Mock Stock Market</Typography>
         </Box>
-        <Box sx={{ padding: "5px" }}>
+        <Box sx={styles.styleNavbarTabs}>
           <Stack direction="row" spacing={2}>
-            <Button variant="contained">Get Quote </Button>
+            <Button variant="contained" onClick={handleGetQuote}>
+              Get Quote
+            </Button>
             <Button variant="contained" disabled={user === null}>
               My Portfolio
             </Button>
@@ -152,49 +160,33 @@ export default function Navbar(props) {
             </Button>
           </Stack>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-          }}
-        >
-          <Box sx={{ padding: "5px" }}>
-            {user ? (
-              <>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  sx={{ alignItems: "center" }}
-                >
-                  <Typography variant="h6">
-                    Hello, {user.displayName}
+        <Box sx={styles.styleNavbarUserOperations}>
+          {user ? (
+            <>
+              <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+                <Typography variant="h6">Hello, {user.displayName}</Typography>
+                <Button variant="contained" color="success">
+                  <Typography sx={{ fontWeight: "bold" }}>
+                    $ {user.capital}
                   </Typography>
-                  <Button variant="contained" color="success">
-                    <Typography sx={{ fontWeight: "bold" }}>
-                      $ {user.capital}
-                    </Typography>
-                  </Button>
-                  <Button variant="outlined" onClick={handleSignOutClick}>
-                    Sign Out
-                  </Button>
-                </Stack>
-              </>
-            ) : (
-              <>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  sx={{ alignItems: "center" }}
-                >
-                  <Button variant="contained" onClick={handleSignInClick}>
-                    Sign In
-                  </Button>
-                  <Button variant="outlined" onClick={handleSignUpClick}>
-                    Sign Up
-                  </Button>
-                </Stack>
-              </>
-            )}
-          </Box>
+                </Button>
+                <Button variant="outlined" onClick={handleSignOutClick}>
+                  Sign Out
+                </Button>
+              </Stack>
+            </>
+          ) : (
+            <>
+              <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+                <Button variant="contained" onClick={handleSignInClick}>
+                  Sign In
+                </Button>
+                <Button variant="outlined" onClick={handleSignUpClick}>
+                  Sign Up
+                </Button>
+              </Stack>
+            </>
+          )}
         </Box>
       </Box>
     </>

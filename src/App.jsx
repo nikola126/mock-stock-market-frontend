@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Content from "./components/Content/Content";
-
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import UserContext from "./components/Context/UserContext";
 import Footer from "./components/Footer/Footer";
 import Navbar from "./components/Navbar/Navbar";
+import QuotePage from "./components/Pages/QuotePage";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -18,9 +18,14 @@ export default function App() {
   return (
     <>
       <UserContext.Provider value={{ user, setUser }}>
-        <Navbar />
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route exact path="/" element={<QuotePage />} />
+            <Route path="/stocks/get" element={<QuotePage />} />
+          </Routes>
+        </BrowserRouter>
       </UserContext.Provider>
-      <Content user={user} />
       <Footer />
     </>
   );
