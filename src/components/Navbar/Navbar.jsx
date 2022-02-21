@@ -3,9 +3,10 @@ import Box from "@mui/material/Box";
 import { Button, Stack, Typography } from "@mui/material";
 import LoginModal from "../LoginModal/LoginModal";
 import RegisterModal from "../RegisterModal/RegisterModal";
-import { hostUrl } from "../../constants/hostUrl";
 import { endpoints } from "../../constants/endpoints";
 import UserContext from "../Context/UserContext";
+import { styleNavbarContent } from "./Styles";
+import ReactDOM from "react-dom";
 
 export default function Navbar(props) {
   const { user, setUser } = useContext(UserContext);
@@ -21,6 +22,7 @@ export default function Navbar(props) {
 
   const handleSignOutClick = () => {
     setUser(null);
+    localStorage.removeItem("user", user);
   };
 
   const handleSignUpClick = () => {
@@ -35,7 +37,7 @@ export default function Navbar(props) {
 
   const handleLogin = async (username, password) => {
     setLoading(true);
-    fetch(endpoints(hostUrl).userLogin, {
+    fetch(endpoints().userLogin, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -48,6 +50,7 @@ export default function Navbar(props) {
           response.json().then((response) => {
             console.log(response);
             setUser(response);
+            localStorage.setItem("user", JSON.stringify(response));
             setShowLoginModal(false);
             setLoading(false);
           });
@@ -70,7 +73,7 @@ export default function Navbar(props) {
 
   const handleRegister = async (username, password, displayName, capital) => {
     setLoading(true);
-    fetch(endpoints(hostUrl).userRegister, {
+    fetch(endpoints().userRegister, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -108,36 +111,46 @@ export default function Navbar(props) {
       });
   };
 
+  const portalElement = document.getElementById("overlays");
+
   return (
     <>
-      {showLoginModal && (
-        <LoginModal
-          show={showLoginModal}
-          loading={loading}
-          error={error}
-          handleLogin={handleLogin}
-          handleModalClose={handleModalClose}
-        />
-      )}
-      {showRegisterModal && (
-        <RegisterModal
-          show={showRegisterModal}
-          loading={loading}
-          error={error}
-          handleRegister={handleRegister}
-          handleModalClose={handleModalClose}
-        ></RegisterModal>
-      )}
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      {showLoginModal &&
+        ReactDOM.createPortal(
+          <LoginModal
+            show={showLoginModal}
+            loading={loading}
+            error={error}
+            handleLogin={handleLogin}
+            handleModalClose={handleModalClose}
+          />,
+          portalElement
+        )}
+      {showRegisterModal &&
+        ReactDOM.createPortal(
+          <RegisterModal
+            show={showRegisterModal}
+            loading={loading}
+            error={error}
+            handleRegister={handleRegister}
+            handleModalClose={handleModalClose}
+          />,
+          portalElement
+        )}
+      <Box sx={styleNavbarContent}>
         <Box sx={{ padding: "5px" }}>
           <Typography variant="h5">Mock Stock Market</Typography>
+        </Box>
+        <Box sx={{ padding: "5px" }}>
+          <Stack direction="row" spacing={2}>
+            <Button variant="contained">Get Quote </Button>
+            <Button variant="contained" disabled={user === null}>
+              My Portfolio
+            </Button>
+            <Button variant="contained" disabled={user === null}>
+              Transaction History
+            </Button>
+          </Stack>
         </Box>
         <Box
           sx={{
