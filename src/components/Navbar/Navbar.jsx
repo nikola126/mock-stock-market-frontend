@@ -10,7 +10,8 @@ import UserContext from "../Context/UserContext";
 import * as styles from "./Styles";
 
 export default function Navbar(props) {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, capital, setCapital, portfolio, setPortfolio } =
+    useContext(UserContext);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -26,7 +27,8 @@ export default function Navbar(props) {
 
   const handleSignOutClick = () => {
     setUser(null);
-    localStorage.removeItem("user", user);
+    setPortfolio(null);
+    navigate("/");
   };
 
   const handleSignUpClick = () => {
@@ -54,9 +56,10 @@ export default function Navbar(props) {
           response.json().then((response) => {
             console.log(response);
             setUser(response);
-            localStorage.setItem("user", JSON.stringify(response));
+            setCapital(response.capital);
             setShowLoginModal(false);
             setLoading(false);
+            props.updatePortfolio(response.id);
           });
         } else {
           return response.json().then((response) => {
@@ -119,6 +122,10 @@ export default function Navbar(props) {
     navigate("/stocks/get");
   };
 
+  const handleGetPortfolio = () => {
+    navigate("/portfolio");
+  };
+
   return (
     <>
       {showLoginModal &&
@@ -144,7 +151,7 @@ export default function Navbar(props) {
           portalElement
         )}
       <Box sx={styles.styleNavbar}>
-        <Box>
+        <Box sx={{ padding: "5px" }}>
           <Typography variant="h5">Mock Stock Market</Typography>
         </Box>
         <Box sx={styles.styleNavbarTabs}>
@@ -152,7 +159,11 @@ export default function Navbar(props) {
             <Button variant="contained" onClick={handleGetQuote}>
               Get Quote
             </Button>
-            <Button variant="contained" disabled={user === null}>
+            <Button
+              variant="contained"
+              onClick={handleGetPortfolio}
+              disabled={user === null}
+            >
               My Portfolio
             </Button>
             <Button variant="contained" disabled={user === null}>
@@ -166,9 +177,11 @@ export default function Navbar(props) {
               <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
                 <Typography variant="h6">Hello, {user.displayName}</Typography>
                 <Button variant="contained" color="success">
-                  <Typography sx={{ fontWeight: "bold" }}>
-                    $ {user.capital}
-                  </Typography>
+                  {capital && (
+                    <Typography sx={{ fontWeight: "bold" }}>
+                      $ {capital.toFixed(2)}
+                    </Typography>
+                  )}
                 </Button>
                 <Button variant="outlined" onClick={handleSignOutClick}>
                   Sign Out

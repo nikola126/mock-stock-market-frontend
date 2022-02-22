@@ -8,17 +8,18 @@ export const styleQuoteForm = (theme) => ({
 export const styleQuoteComponent = (theme) => {
   var coloring;
   if (theme === true) {
-    coloring = "linear-gradient(to top, white, white, white, #91ffa2)";
+    coloring = "linear-gradient(to top, white, white, white, white, #91ffa2)";
   } else {
-    coloring = "linear-gradient(to top, white, white, white, #ff6161)";
+    coloring = "linear-gradient(to top, white, white, white, white, #ff6161)";
   }
   return {
     display: "flex",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     padding: "1%",
     margin: "1% 1% 10% 1%",
-    width: "40%",
+    minWidth: "20%",
     backgroundColor: "white",
     border: "1px solid #000",
     borderRadius: "10px",
@@ -26,6 +27,18 @@ export const styleQuoteComponent = (theme) => {
     overflow: "hidden",
     position: "relative",
     background: coloring,
+    userSelect: "none"
+  };
+};
+
+export const styleQuoteContent = (theme) => {
+  return {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    overflow: "hidden",
+    position: "relative",
   };
 };
 
