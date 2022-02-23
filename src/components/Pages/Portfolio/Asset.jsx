@@ -8,9 +8,11 @@ import {
   CardActions,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import UserContext from "../../Context/UserContext";
 import { TimeUntil } from "../../../utilities/TimeUntil";
 
 export default function Asset(props) {
+  const { capital } = useContext(UserContext);
   var now = new Date();
 
   const handleUpdate = () => {
@@ -69,13 +71,19 @@ export default function Asset(props) {
           width: "80%",
         }}
       >
-        <Button variant="contained" size="small" onClick={handleBuy}>
+        <Button
+          variant="contained"
+          size="small"
+          onClick={handleBuy}
+          disabled={props.asset.stock.price > capital || props.loading}
+        >
           Buy
         </Button>
         <Button
           variant="contained"
           size="small"
           onClick={handleSell}
+          disabled={props.loading}
         >
           Sell
         </Button>

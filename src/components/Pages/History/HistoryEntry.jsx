@@ -21,8 +21,8 @@ export default function HistoryEntry(props) {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        padding: "1%",
-        margin: "1% 1% 1% 1%",
+        padding: "10px",
+        margin: "1% 1% 0.2% 1%",
         minWidth: "40%",
         maxWidth: "45%",
         height: "50px",
@@ -52,11 +52,11 @@ export default function HistoryEntry(props) {
             </Typography>
             <Typography variant="p">
               {props.entry.shares} shares
-              <br />${props.entry.price}
+              <br />${props.entry.price.toFixed(2)}
             </Typography>
             <Typography variant="p">
               Total:
-              <br />${props.entry.shares * props.entry.price}
+              <br />${(props.entry.shares * props.entry.price).toFixed(2)}
             </Typography>
           </>
         ) : (
@@ -70,11 +70,11 @@ export default function HistoryEntry(props) {
                 </Typography>
                 <Typography variant="p">
                   {props.entry.shares} shares
-                  <br />${props.entry.price}
+                  <br />${props.entry.price.toFixed(2)}
                 </Typography>
                 <Typography variant="p">
                   Total:
-                  <br />${props.entry.shares * props.entry.price}
+                  <br />${(props.entry.shares * props.entry.price).toFixed(2)}
                 </Typography>
               </>
             ) : (
@@ -84,7 +84,7 @@ export default function HistoryEntry(props) {
                 <Typography variant="p">Account</Typography>
                 <Typography variant="p">
                   Total:
-                  <br />${props.entry.price}
+                  <br />${props.entry.price.toFixed(2)}
                 </Typography>
               </>
             )}

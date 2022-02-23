@@ -21,8 +21,9 @@ export default function PortfolioPage(props) {
   }, []);
 
   const handleUpdateClick = (symbol) => {
-    console.log("Update " + symbol);
+    setLoading(true);
     updateStock(symbol);
+    setLoading(false);
   };
 
   const handleClickBuy = (asset) => {
@@ -181,6 +182,7 @@ export default function PortfolioPage(props) {
                   handleUpdateClick={handleUpdateClick}
                   handleClickBuy={handleClickBuy}
                   handleClickSell={handleClickSell}
+                  loading={loading}
                 />
               ))}
             </Grid>
