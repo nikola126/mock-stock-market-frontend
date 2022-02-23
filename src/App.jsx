@@ -6,6 +6,9 @@ import Footer from "./components/Footer/Footer";
 import Navbar from "./components/Navbar/Navbar";
 import QuotePage from "./components/Pages/Quote/QuotePage";
 import PortfolioPage from "./components/Pages/Portfolio/PortfolioPage";
+import PageNotFound from "./components/Pages/NotFound/PageNotFound";
+import { Box } from "@mui/material";
+import HistoryPage from "./components/Pages/History/HistoryPage";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -56,13 +59,15 @@ export default function App() {
               element={<QuotePage updatePortfolio={updatePortfolio} />}
             />
             <Route
-              path="/stocks/get"
+              path="/get"
               element={<QuotePage updatePortfolio={updatePortfolio} />}
             />
             <Route
               path="/portfolio"
               element={<PortfolioPage updatePortfolio={updatePortfolio} />}
             />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>

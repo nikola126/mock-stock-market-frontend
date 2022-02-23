@@ -10,7 +10,7 @@ export function TimeUntil(date, now) {
 
   if (Math.round(days) > 1) asString += Math.floor(days) + " days ";
   else if (Math.round(hours) > 1) asString += Math.floor(hours) + " hours ";
-  else if (Math.round(minutes) > 2)
+  else if (Math.round(minutes) > 1)
     asString += Math.floor(minutes) + " minutes ";
   else recentlyUpdated = true;
 

@@ -7,7 +7,7 @@ import { Button, Stack, Slider, Typography, Input } from "@mui/material";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 export default function TransactionModalBuy(props) {
-  const { user, capital, portfolio } = useContext(UserContext);
+  const { capital, portfolio } = useContext(UserContext);
   const [value, setValue] = useState(0);
   const [quote, setQuote] = useState(props.quote);
   const [assetOwned, setAssetOwned] = useState(
@@ -72,7 +72,7 @@ export default function TransactionModalBuy(props) {
           }}
         >
           <Stack sx={{ padding: "10px", alignItems: "center" }} spacing={2}>
-            {props.error && (
+            {props.error != null && (
               <Typography color="error" align="center" padding="5px">
                 <h3>{props.error.status}</h3>
                 <h3>{props.error.message}</h3>

@@ -2,18 +2,18 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { endpoints } from "../../../constants/endpoints";
 import Quote from "./Quote";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import UserContext from "../../Context/UserContext";
 import * as styles from "./Styles";
 import { getRandomInt } from "../../../utilities/RandInt";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ReactDOM from "react-dom";
 import { useRef } from "react";
 import TransactionModalBuy from "../../TransactionModal/TransactionModalBuy";
 import TransactionModalSell from "../../TransactionModal/TransactionModalSell";
 
 export default function QuotePage(props) {
-  const { user, setUser, capital, setCapital, portfolio, setPortfolio } =
+  const { user, capital, setCapital } =
     useContext(UserContext);
 
   const placeHolderSymbols = [

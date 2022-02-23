@@ -19,7 +19,8 @@ export const styleQuoteComponent = (theme) => {
     alignItems: "center",
     padding: "1%",
     margin: "1% 1% 10% 1%",
-    minWidth: "20%",
+    minWidth: "30%",
+    maxWidth: "40%",
     backgroundColor: "white",
     border: "1px solid #000",
     borderRadius: "10px",
@@ -27,7 +28,7 @@ export const styleQuoteComponent = (theme) => {
     overflow: "hidden",
     position: "relative",
     background: coloring,
-    userSelect: "none"
+    userSelect: "none",
   };
 };
 

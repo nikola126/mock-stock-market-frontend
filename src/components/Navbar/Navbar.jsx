@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import ReactDOM from "react-dom";
 import Box from "@mui/material/Box";
@@ -19,6 +19,8 @@ export default function Navbar(props) {
 
   const navigate = useNavigate();
   const portalElement = document.getElementById("overlays");
+
+  useEffect(() => {}, [user, capital, portfolio]);
 
   const handleSignInClick = () => {
     setError(null);
@@ -98,6 +100,8 @@ export default function Navbar(props) {
           response.json().then((response) => {
             console.log(response);
             setUser(response);
+            setCapital(response.capital);
+            props.updatePortfolio(response.id);
             setShowRegisterModal(false);
             setLoading(false);
           });
@@ -119,11 +123,15 @@ export default function Navbar(props) {
   };
 
   const handleGetQuote = () => {
-    navigate("/stocks/get");
+    navigate("/get");
   };
 
   const handleGetPortfolio = () => {
     navigate("/portfolio");
+  };
+
+  const handleGetHistory = () => {
+    navigate("/history");
   };
 
   return (
@@ -166,7 +174,11 @@ export default function Navbar(props) {
             >
               My Portfolio
             </Button>
-            <Button variant="contained" disabled={user === null}>
+            <Button
+              variant="contained"
+              onClick={handleGetHistory}
+              disabled={user === null}
+            >
               Transaction History
             </Button>
           </Stack>

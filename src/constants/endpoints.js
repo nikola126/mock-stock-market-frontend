@@ -7,7 +7,9 @@ export const endpoints = () => {
     userEdit: `${hostUrl}/users/edit`,
     userDelete: `${hostUrl}/users/delete`,
     stockGet: `${hostUrl}/stocks/get`,
+    stockUpdate: `${hostUrl}/stocks/update`,
     assetsGet: `${hostUrl}/assets/get`,
     transactionAdd: `${hostUrl}/transactions/add`,
+    transactionGet: `${hostUrl}/transactions/get`
   };
 };

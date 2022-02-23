@@ -1,19 +1,32 @@
 import React, { useState, useContext } from "react";
 import {
   Box,
-  Button,
-  Card,
-  CardContent,
-  CardActions,
   Typography,
+  Button,
+  IconButton,
+  Card,
+  CardActions,
 } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { TimeUntil } from "../../../utilities/TimeUntil";
 
 export default function Asset(props) {
   var now = new Date();
 
+  const handleUpdate = () => {
+    props.handleUpdateClick(props.asset.stock.symbol);
+  };
+
+  const handleBuy = () => {
+    props.handleClickBuy(props.asset);
+  };
+
+  const handleSell = () => {
+    props.handleClickSell(props.asset);
+  };
+
   return (
-    <Box
+    <Card
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -42,8 +55,31 @@ export default function Asset(props) {
         Shares: {props.asset.shares}
       </Typography>
       <Typography variant="h8" align="center">
-        Last Update: {TimeUntil(props.asset.stock.lastUpdate, now).asString}
+        Updated: {TimeUntil(props.asset.stock.lastUpdate, now).asString}
+        <IconButton size="small" onClick={handleUpdate}>
+          <RefreshIcon fontSize="small" />
+        </IconButton>
       </Typography>
-    </Box>
+      <CardActions
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "1px",
+          width: "80%",
+        }}
+      >
+        <Button variant="contained" size="small" onClick={handleBuy}>
+          Buy
+        </Button>
+        <Button
+          variant="contained"
+          size="small"
+          onClick={handleSell}
+        >
+          Sell
+        </Button>
+      </CardActions>
+    </Card>
   );
 }

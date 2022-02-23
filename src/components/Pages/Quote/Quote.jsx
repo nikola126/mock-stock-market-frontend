@@ -40,7 +40,7 @@ export default function Quote(props) {
     >
       <Card
         variant="outlined"
-        sx={styles.styleQuoteComponent(changePercent >= 0)}
+        sx={styles.styleQuoteComponent(quote.change >= 0)}
       >
         <Typography
           align="center"

@@ -12,7 +12,7 @@ export default function LoginModal(props) {
     username.current = "";
     password.current = "";
     props.handleModalClose();
-  }
+  };
 
   const handleUsernameChange = (e) => {
     username.current = e.target.value;
@@ -47,7 +47,7 @@ export default function LoginModal(props) {
           }}
         >
           <Stack sx={{ padding: "10px" }} spacing={2}>
-            {props.error && (
+            {props.error != null && (
               <Typography color="error" align="center" padding="1px">
                 <h3>{props.error.status}</h3>
                 <h3>{props.error.message}</h3>
