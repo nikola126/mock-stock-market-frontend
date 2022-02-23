@@ -9,6 +9,7 @@ import PortfolioPage from "./components/Pages/Portfolio/PortfolioPage";
 import PageNotFound from "./components/Pages/NotFound/PageNotFound";
 import { Box } from "@mui/material";
 import HistoryPage from "./components/Pages/History/HistoryPage";
+import AccountOps from "./components/Pages/AccountOps/AccountOps";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -67,6 +68,7 @@ export default function App() {
               element={<PortfolioPage updatePortfolio={updatePortfolio} />}
             />
             <Route path="/history" element={<HistoryPage />} />
+            <Route path="/account" element={<AccountOps />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </BrowserRouter>

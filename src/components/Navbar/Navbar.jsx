@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import ReactDOM from "react-dom";
 import Box from "@mui/material/Box";
 import { Button, Stack, Typography } from "@mui/material";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import LoginModal from "../LoginModal/LoginModal";
 import RegisterModal from "../RegisterModal/RegisterModal";
 import { endpoints } from "../../constants/endpoints";
@@ -134,6 +135,10 @@ export default function Navbar(props) {
     navigate("/history");
   };
 
+  const handleGetAccountOps = () => {
+    navigate("/account");
+  };
+
   return (
     <>
       {showLoginModal &&
@@ -194,6 +199,13 @@ export default function Navbar(props) {
                       $ {capital.toFixed(2)}
                     </Typography>
                   )}
+                </Button>
+                <Button
+                  variant="contained"
+                  startIcon={<ManageAccountsIcon />}
+                  onClick={handleGetAccountOps}
+                >
+                  Account Operations
                 </Button>
                 <Button variant="outlined" onClick={handleSignOutClick}>
                   Sign Out
