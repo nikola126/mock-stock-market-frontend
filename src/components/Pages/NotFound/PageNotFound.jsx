@@ -1,7 +1,4 @@
-import {
-  Box,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 export default function PageNotFound(props) {
   return (
@@ -9,6 +6,7 @@ export default function PageNotFound(props) {
       sx={{
         display: "flex",
         justifyContent: "center",
+        padding: "10%",
       }}
     >
       <Typography variant="h2" align="center">

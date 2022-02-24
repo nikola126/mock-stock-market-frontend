@@ -8,33 +8,70 @@ import {
   FormControl,
   FormControlLabel,
   Typography,
+  Tooltip,
 } from "@mui/material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import React, { useState, useContext, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import UserContext from "../../Context/UserContext";
+import { endpoints } from "../../../constants/endpoints";
+import {
+  checkAlphaInput,
+  checkNumericInput,
+  checkAlphaNumericInput,
+} from "../../../utilities/InputValidation";
 
 export default function AccountOps() {
   const { user, setUser, capital, setCapital, portfolio, setPortfolio } =
     useContext(UserContext);
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user === null) navigate("/");
+  });
+
+  const apiTokenTooltipText =
+    "This application uses iexcloud.io to fetch financial data. You can provide your own token after registering there.";
+
   const [error, setError] = useState(null);
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordHelperText, setPasswordHelperText] = useState(null);
   const [loading, setLoading] = useState(false);
   const [passProvided, setPassProvided] = useState(false);
   const [choice, setChoice] = useState(0);
+  const [applyButtonText, setApplyButtonText] = useState("Apply Changes");
   const [newValue, setNewValue] = useState(false);
 
-  const username = useRef("");
+  const [newPasswordError, setNewPasswordError] = useState(false);
+  const [newPasswordHelperText, setNewPasswordHelperText] = useState(null);
+  const [newDisplayNameError, setNewDisplayNameError] = useState(false);
+  const [newDisplayNameHelperText, setNewDisplayNameHelperText] =
+    useState(null);
+  const [newCapitalError, setNewCapitalError] = useState(false);
+  const [newCapitalHelperText, setNewCapitalHelperText] = useState(null);
+
+  const username = useRef(user && user.username);
   const password = useRef("");
   const newDisplayName = useRef("");
   const newCapital = useRef(0);
   const newPassword = useRef("");
+  const newApiToken = useRef("");
 
-  const handleChangeChange = (e) => {
+  const handleChoiceChange = (e) => {
     setChoice(e.target.value);
+    setNewPasswordError(false);
+    setNewPasswordHelperText(null);
+    setNewDisplayNameError(false);
+    setNewDisplayNameHelperText(null);
+    setNewCapitalError(false);
+    setNewCapitalHelperText(null);
     setNewValue(false);
-  };
-
-  const handleUsernameChange = (e) => {
-    username.current = e.target.value;
+    if (e.target.value === "password") {
+      setApplyButtonText("Apply and logout");
+    } else {
+      setApplyButtonText("Apply Changes");
+    }
   };
 
   const handlePasswordChange = (e) => {
@@ -43,22 +80,150 @@ export default function AccountOps() {
     else setPassProvided(false);
   };
 
+  const handlePasswordBlur = () => {
+    if (checkAlphaNumericInput(password.current)) {
+      setPasswordError(false);
+      setPasswordHelperText(null);
+    } else {
+      setPasswordError(true);
+      setPasswordHelperText("Password must be at least 2 characters long!");
+    }
+  };
+
   const handleNewPasswordChange = (e) => {
     newPassword.current = e.target.value;
-    if (newPassword.current !== "") setNewValue(true);
-    else setNewValue(false);
+    if (newPassword.current !== "") {
+      setNewValue(true);
+      if (checkAlphaNumericInput(newPassword.current)) {
+        setNewPasswordError(false);
+        setNewPasswordHelperText(null);
+      } else {
+        setNewPasswordError(true);
+        setNewPasswordHelperText(
+          "Password must be at least 2 characters long!"
+        );
+      }
+    } else setNewValue(false);
   };
 
   const handleNewDisplayNameChange = (e) => {
     newDisplayName.current = e.target.value;
-    if (newDisplayName.current !== "") setNewValue(true);
-    else setNewValue(false);
+    if (newDisplayName.current !== "") {
+      setNewValue(true);
+      if (checkAlphaInput(newDisplayName.current)) {
+        setNewDisplayNameError(false);
+        setNewDisplayNameHelperText(null);
+      } else {
+        setNewDisplayNameError(true);
+        setNewDisplayNameHelperText(
+          "Display name must be at least 2 characters long and contain only letters!"
+        );
+      }
+    } else setNewValue(false);
   };
 
   const handleNewCapitalChange = (e) => {
     newCapital.current = e.target.value;
-    if (newCapital.current !== "") setNewValue(true);
+    if (newCapital.current !== "") {
+      setNewValue(true);
+      if (checkNumericInput(newCapital.current)) {
+        setNewCapitalError(false);
+        setNewCapitalHelperText(null);
+      } else {
+        setNewCapitalError(true);
+        setNewCapitalHelperText(
+          "Capital must be numerical value between 1 and 99999!"
+        );
+      }
+    } else setNewValue(false);
+  };
+
+  const handleNewApiTokenChange = (e) => {
+    newApiToken.current = e.target.value;
+    if (newApiToken.current !== "") setNewValue(true);
     else setNewValue(false);
+  };
+
+  const handleAccountOperation = async () => {
+    setLoading(true);
+
+    var requestBody;
+    if (choice === "password")
+      requestBody = {
+        username: username.current,
+        password: password.current,
+        newPassword: newPassword.current,
+      };
+    else if (choice === "displayName")
+      requestBody = {
+        username: username.current,
+        password: password.current,
+        newDisplayName: newDisplayName.current,
+      };
+    else if (choice === "capital")
+      requestBody = {
+        username: username.current,
+        password: password.current,
+        capitalChange: newCapital.current,
+      };
+    else if (choice === "token")
+      requestBody = {
+        username: username.current,
+        password: password.current,
+        newApiToken: newApiToken.current,
+      };
+    else {
+      setError("invalid choice");
+      setLoading(false);
+      return;
+    }
+
+    fetch(endpoints().userEdit, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((response) => {
+            console.log(response);
+            setApplyButtonText("Apply changes");
+            if (choice === "password") {
+              setUser(null);
+              setPortfolio(null);
+              setCapital(null);
+              navigate("/");
+            } else if (choice === "displayName") {
+              // creates a deep copy to triger Navbar rerender
+              var newUser = JSON.parse(JSON.stringify(user));
+              newUser.displayName = newDisplayName.current;
+              setUser(newUser);
+              navigate("/get");
+            } else if (choice === "capital") {
+              const changeCapital =
+                Number(capital) + Number(newCapital.current);
+              setCapital(changeCapital);
+              navigate("/history");
+            }
+          });
+        } else {
+          return response.json().then((response) => {
+            console.log(response);
+            throw {
+              status: response.status,
+              message: response.message,
+            };
+          });
+        }
+      })
+      .catch((responseError) => {
+        console.log(responseError);
+        setError(responseError.message);
+        setLoading(false);
+      });
   };
 
   return (
@@ -71,15 +236,19 @@ export default function AccountOps() {
             alignItems: "center",
             padding: "2%",
             margin: "1%",
-            // border: "1px solid #000",
             borderRadius: "5px",
             boxShadow: 5,
           }}
         >
-          {error && <Typography>{error}</Typography>}
+          {error && (
+            <Typography color="error" variant="h6">
+              {error}
+            </Typography>
+          )}
           <Box
             sx={{
               display: "flex",
+              width: "30%",
               flexDirection: "column",
               padding: "1%",
               margin: "1%",
@@ -93,8 +262,12 @@ export default function AccountOps() {
             ></TextField>
             <br />
             <TextField
+              autoFocus
               label="password"
               onChange={handlePasswordChange}
+              onBlur={handlePasswordBlur}
+              error={passwordError}
+              helperText={passwordHelperText}
             ></TextField>
           </Box>
           <Box
@@ -105,7 +278,7 @@ export default function AccountOps() {
           >
             <FormControl disabled={!passProvided}>
               <FormLabel>Account Operations</FormLabel>
-              <RadioGroup value={choice} onChange={handleChangeChange}>
+              <RadioGroup value={choice} onChange={handleChoiceChange}>
                 <FormControlLabel
                   value="password"
                   control={<Radio />}
@@ -121,12 +294,25 @@ export default function AccountOps() {
                   control={<Radio />}
                   label="Add Funds"
                 />
+                <FormControlLabel
+                  value="token"
+                  control={<Radio />}
+                  label={
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      Change API Token
+                      <Tooltip title={apiTokenTooltipText}>
+                        <HelpOutlineIcon color="disabled" />
+                      </Tooltip>
+                    </Box>
+                  }
+                />
               </RadioGroup>
             </FormControl>
           </Box>
 
           <Box
             sx={{
+              width: "30%",
               display: "flex",
               flexDirection: "column",
               padding: "1%",
@@ -134,20 +320,32 @@ export default function AccountOps() {
           >
             {passProvided && choice === "password" && (
               <TextField
-                label="New password"
+                label="New Password"
                 onChange={handleNewPasswordChange}
+                erorr={newPasswordError}
+                helperText={newPasswordHelperText}
               ></TextField>
             )}
             {passProvided && choice === "displayName" && (
               <TextField
                 label="New Display Name"
                 onChange={handleNewDisplayNameChange}
+                erorr={newDisplayNameError}
+                helperText={newDisplayNameHelperText}
               ></TextField>
             )}
             {passProvided && choice === "capital" && (
               <TextField
                 label="Funds to Add"
                 onChange={handleNewCapitalChange}
+                error={newCapitalError}
+                helperText={newCapitalHelperText}
+              ></TextField>
+            )}
+            {passProvided && choice === "token" && (
+              <TextField
+                label="New API Token"
+                onChange={handleNewApiTokenChange}
               ></TextField>
             )}
             <Box
@@ -159,9 +357,17 @@ export default function AccountOps() {
             >
               <Button
                 variant="contained"
-                disabled={!newValue || !passProvided || error}
+                onClick={handleAccountOperation}
+                disabled={
+                  !newValue ||
+                  !passProvided ||
+                  loading ||
+                  newPasswordError ||
+                  newDisplayNameError ||
+                  newCapitalError
+                }
               >
-                Apply Changes
+                {applyButtonText}
               </Button>
             </Box>
           </Box>
