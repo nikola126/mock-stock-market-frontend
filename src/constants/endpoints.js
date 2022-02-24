@@ -1,5 +1,5 @@
 export const endpoints = () => {
-  const hostUrl = "http://localhost:8080";
+  const hostUrl = "http://localhost:8081";
 
   return {
     userLogin: `${hostUrl}/users/login`,
