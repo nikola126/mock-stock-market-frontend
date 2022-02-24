@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, Snackbar, Alert } from "@mui/material";
 import React, { useState, useContext, useEffect } from "react";
 import ReactDOM from "react-dom";
 import UserContext from "../../Context/UserContext";
@@ -15,6 +15,9 @@ export default function PortfolioPage(props) {
   const [action, setAction] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [toast, setToast] = useState(false);
+  const [toastSeverity, setToastSeverity] = useState("info");
+  const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
     if (user) props.updatePortfolio(user.id);
@@ -67,6 +70,7 @@ export default function PortfolioPage(props) {
           response.json().then((response) => {
             console.log(response);
             props.updatePortfolio(user.id);
+            openToast(symbol + " price updated.", "info");
           });
         } else {
           return response.json().then((response) => {
@@ -81,6 +85,18 @@ export default function PortfolioPage(props) {
       .catch((responseError) => {
         console.log(responseError);
       });
+  };
+
+  const openToast = (message, severity) => {
+    setToastMessage(message);
+    setToastSeverity(severity);
+    setToast(true);
+  };
+
+  const closeToast = () => {
+    setToastMessage(null);
+    setToastSeverity("info");
+    setToast(false);
   };
 
   const handleTransaction = async (shares, action, latestPrice) => {
@@ -117,6 +133,8 @@ export default function PortfolioPage(props) {
             setCapital(updatedCapital);
             setLoading(false);
             handleModalClose();
+            if (action === "BUY") openToast("Purchase successful", "success");
+            else openToast("Sale successfull", "success");
           });
         } else {
           return response.json().then((response) => {
@@ -159,6 +177,15 @@ export default function PortfolioPage(props) {
             handleTransaction={handleTransaction}
             quote={quote}
           />,
+          portalElement
+        )}
+      {toast &&
+        ReactDOM.createPortal(
+          <>
+            <Snackbar open={toast} autoHideDuration={3000} onClose={closeToast}>
+              <Alert severity={toastSeverity}>{toastMessage}</Alert>
+            </Snackbar>
+          </>,
           portalElement
         )}
       {error && (

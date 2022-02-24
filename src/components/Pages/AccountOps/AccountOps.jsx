@@ -9,9 +9,12 @@ import {
   FormControlLabel,
   Typography,
   Tooltip,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import React, { useState, useContext, useEffect, useRef } from "react";
+import ReactDOM from "react-dom";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../../Context/UserContext";
 import { endpoints } from "../../../constants/endpoints";
@@ -50,6 +53,11 @@ export default function AccountOps() {
     useState(null);
   const [newCapitalError, setNewCapitalError] = useState(false);
   const [newCapitalHelperText, setNewCapitalHelperText] = useState(null);
+
+  // TODO Toasts not working, component dismounted after navigation
+  const [toast, setToast] = useState(false);
+  const [toastSeverity, setToastSeverity] = useState("info");
+  const [toastMessage, setToastMessage] = useState(null);
 
   const username = useRef(user && user.username);
   const password = useRef("");
@@ -195,17 +203,20 @@ export default function AccountOps() {
               setUser(null);
               setPortfolio(null);
               setCapital(null);
+              openToast("Password updated!", "info");
               navigate("/");
             } else if (choice === "displayName") {
               // creates a deep copy to triger Navbar rerender
               var newUser = JSON.parse(JSON.stringify(user));
               newUser.displayName = newDisplayName.current;
               setUser(newUser);
+              openToast("Display Name updated!", "success");
               navigate("/get");
             } else if (choice === "capital") {
               const changeCapital =
                 Number(capital) + Number(newCapital.current);
               setCapital(changeCapital);
+              openToast("Funds added", "success");
               navigate("/history");
             }
           });
@@ -226,8 +237,36 @@ export default function AccountOps() {
       });
   };
 
+  const openToast = (message, severity) => {
+    setToastMessage(message);
+    setToastSeverity(severity);
+    setToast(true);
+  };
+
+  const closeToast = () => {
+    setToastMessage(null);
+    setToastSeverity("info");
+    setToast(false);
+  };
+
+  const portalElement = document.getElementById("overlays");
+
   return (
     <>
+      {toast &&
+        ReactDOM.createPortal(
+          <>
+            <Snackbar
+              open={toast}
+              autoHideDuration={3000}
+              onClose={closeToast}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+              <Alert severity={toastSeverity}>{toastMessage}</Alert>
+            </Snackbar>
+          </>,
+          portalElement
+        )}
       {user && (
         <Box
           sx={{

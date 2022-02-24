@@ -184,8 +184,8 @@ export default function Navbar(props) {
       {toast &&
         ReactDOM.createPortal(
           <>
-            <Snackbar open={toast} autoHideDuration={2500} onClose={closeToast}>
-              <Alert severity="success">{toastMessage}</Alert>
+            <Snackbar open={toast} autoHideDuration={3000} onClose={closeToast}>
+              <Alert severity={toastSeverity}>{toastMessage}</Alert>
             </Snackbar>
           </>,
           portalElement

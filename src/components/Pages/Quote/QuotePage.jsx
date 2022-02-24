@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography, Snackbar, Alert } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { endpoints } from "../../../constants/endpoints";
 import Quote from "./Quote";
@@ -13,8 +13,7 @@ import TransactionModalBuy from "../../TransactionModal/TransactionModalBuy";
 import TransactionModalSell from "../../TransactionModal/TransactionModalSell";
 
 export default function QuotePage(props) {
-  const { user, capital, setCapital } =
-    useContext(UserContext);
+  const { user, capital, setCapital } = useContext(UserContext);
 
   const placeHolderSymbols = [
     "AMZN",
@@ -40,6 +39,9 @@ export default function QuotePage(props) {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [desiredAction, setDesiredAction] = useState(null);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [toast, setToast] = useState(false);
+  const [toastSeverity, setToastSeverity] = useState("info");
+  const [toastMessage, setToastMessage] = useState(null);
 
   const quoteField = useRef("");
 
@@ -119,6 +121,8 @@ export default function QuotePage(props) {
             setCapital(updatedCapital);
             setLoading(false);
             handleModalClose();
+            if (action === "BUY") openToast("Purchase successful", "success");
+            else openToast("Sale successfull", "success");
           });
         } else {
           return response.json().then((response) => {
@@ -152,6 +156,18 @@ export default function QuotePage(props) {
     setShowTransactionModal(true);
   };
 
+  const openToast = (message, severity) => {
+    setToastMessage(message);
+    setToastSeverity(severity);
+    setToast(true);
+  };
+
+  const closeToast = () => {
+    setToastMessage(null);
+    setToastSeverity("info");
+    setToast(false);
+  };
+
   const navigate = useNavigate();
   const portalElement = document.getElementById("overlays");
 
@@ -178,6 +194,15 @@ export default function QuotePage(props) {
             handleTransaction={handleTransaction}
             quote={quote}
           />,
+          portalElement
+        )}
+      {toast &&
+        ReactDOM.createPortal(
+          <>
+            <Snackbar open={toast} autoHideDuration={3000} onClose={closeToast}>
+              <Alert severity={toastSeverity}>{toastMessage}</Alert>
+            </Snackbar>
+          </>,
           portalElement
         )}
       <Box sx={{ width: "100%" }}>
