@@ -248,7 +248,8 @@ export default function AccountOps() {
           <Box
             sx={{
               display: "flex",
-              width: "30%",
+              minWidth: "200px",
+              maxWidth: "30%",
               flexDirection: "column",
               padding: "1%",
               margin: "1%",
@@ -312,7 +313,8 @@ export default function AccountOps() {
 
           <Box
             sx={{
-              width: "30%",
+              minWidth: "200px",
+              maxWidth: "30%",
               display: "flex",
               flexDirection: "column",
               padding: "1%",

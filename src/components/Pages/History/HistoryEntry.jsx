@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Typography, Card, Stack } from "@mui/material";
+import { Typography, Card, Stack, Box } from "@mui/material";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -23,15 +23,14 @@ export default function HistoryEntry(props) {
         alignItems: "center",
         padding: "10px",
         margin: "1% 1% 0.2% 1%",
-        minWidth: "40%",
-        maxWidth: "45%",
+        minWidth: "90%",
+        // maxWidth: "700px",
         height: "50px",
         backgroundColor: "white",
         border: "1px solid #000",
         borderRadius: "5px",
         boxShadow: 5,
         position: "relative",
-        "&:hover": { backgroundColor: "#e0e0e0" },
       }}
     >
       <Stack
@@ -46,10 +45,18 @@ export default function HistoryEntry(props) {
         {props.entry.action === "BUY" ? (
           <>
             <AddCircleOutlineIcon fontSize="large" />
-            <Typography variant="h7">
-              {props.entry.symbol} <br />
-              {props.entry.companyName.substring(0, 10)}...
-            </Typography>
+            <Box
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                width: "5rem",
+              }}
+            >
+              <Typography noWrap variant="h7">
+                {props.entry.symbol} <br />
+                {props.entry.companyName}
+              </Typography>
+            </Box>
             <Typography variant="p">
               {props.entry.shares} shares
               <br />${props.entry.price.toFixed(2)}
@@ -64,10 +71,18 @@ export default function HistoryEntry(props) {
             {props.entry.action === "SELL" ? (
               <>
                 <RemoveCircleOutlineIcon fontSize="large" />
-                <Typography variant="h7">
-                  {props.entry.symbol} <br />
-                  {props.entry.companyName.substring(0, 10)}...
-                </Typography>
+                <Box
+                  sx={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    width: "5rem",
+                  }}
+                >
+                  <Typography noWrap variant="h7">
+                    {props.entry.symbol} <br />
+                    {props.entry.companyName}
+                  </Typography>
+                </Box>
                 <Typography variant="p">
                   {props.entry.shares} shares
                   <br />${props.entry.price.toFixed(2)}
@@ -80,8 +95,16 @@ export default function HistoryEntry(props) {
             ) : (
               <>
                 <AccountBalanceIcon fontSize="large" />
+                <Box
+                  sx={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    width: "3rem",
+                  }}
+                >
+                  <Typography variant="p">Acc</Typography>
+                </Box>
                 <Typography variant="p">Deposit</Typography>
-                <Typography variant="p">Account</Typography>
                 <Typography variant="p">
                   Total:
                   <br />${props.entry.price.toFixed(2)}

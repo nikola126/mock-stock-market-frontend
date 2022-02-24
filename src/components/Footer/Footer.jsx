@@ -19,8 +19,7 @@ export default function Footer() {
           <Link href="https://github.com/nikola126/mock-stock-market">
             Backend
           </Link>
-        </Typography>
-        <Typography align="center" variant="subtitle2">
+          {" "}
           <GitHubIcon sx={{ verticalAlign: "middle" }}></GitHubIcon>
           <Link href="https://github.com/nikola126/mock-stock-market-frontend">
             Frontend

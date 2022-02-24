@@ -58,7 +58,7 @@ export default function Quote(props) {
                 variant="h3"
                 sx={{ fontWeight: "bold" }}
               >
-                ${quote.latestPrice}
+                ${quote.latestPrice.toFixed(2)}
               </Typography>
               {quote.change > 0 ? (
                 <Typography

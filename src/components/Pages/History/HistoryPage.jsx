@@ -57,7 +57,7 @@ export default function HistoryPage(props) {
           flexDirection: "column",
           alignItems: "center",
           padding: "2%",
-          width: "100%",
+          // width: "100%",
         }}
       >
         {loading && (

@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactDOM from "react-dom";
 import Box from "@mui/material/Box";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography, Snackbar, Alert } from "@mui/material";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import LoginModal from "../LoginModal/LoginModal";
 import RegisterModal from "../RegisterModal/RegisterModal";
@@ -17,6 +17,9 @@ export default function Navbar(props) {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [toast, setToast] = useState(false);
+  const [toastSeverity, setToastSeverity] = useState("info");
+  const [toastMessage, setToastMessage] = useState(null);
 
   const navigate = useNavigate();
   const portalElement = document.getElementById("overlays");
@@ -31,6 +34,7 @@ export default function Navbar(props) {
   const handleSignOutClick = () => {
     setUser(null);
     setPortfolio(null);
+    openToast("Logged out.", "info");
     navigate("/");
   };
 
@@ -62,6 +66,7 @@ export default function Navbar(props) {
             setCapital(response.capital);
             setShowLoginModal(false);
             setLoading(false);
+            openToast("Logged in as " + response.displayName, "success");
             props.updatePortfolio(response.id);
           });
         } else {
@@ -105,6 +110,7 @@ export default function Navbar(props) {
             props.updatePortfolio(response.id);
             setShowRegisterModal(false);
             setLoading(false);
+            openToast("Logged in as " + response.displayName, "success");
           });
         } else {
           return response.json().then((response) => {
@@ -139,6 +145,18 @@ export default function Navbar(props) {
     navigate("/account");
   };
 
+  const openToast = (message, severity) => {
+    setToastMessage(message);
+    setToastSeverity(severity);
+    setToast(true);
+  };
+
+  const closeToast = () => {
+    setToastMessage(null);
+    setToastSeverity("info");
+    setToast(false);
+  };
+
   return (
     <>
       {showLoginModal &&
@@ -163,12 +181,24 @@ export default function Navbar(props) {
           />,
           portalElement
         )}
+      {toast &&
+        ReactDOM.createPortal(
+          <>
+            <Snackbar open={toast} autoHideDuration={2500} onClose={closeToast}>
+              <Alert severity="success">{toastMessage}</Alert>
+            </Snackbar>
+          </>,
+          portalElement
+        )}
       <Box sx={styles.styleNavbar}>
         <Box sx={{ padding: "5px" }}>
           <Typography variant="h5">Mock Stock Market</Typography>
+          {user && (
+            <Typography variant="h7">Hello {user.displayName}!</Typography>
+          )}
         </Box>
         <Box sx={styles.styleNavbarTabs}>
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={1}>
             <Button variant="contained" onClick={handleGetQuote}>
               Get Quote
             </Button>
@@ -191,8 +221,7 @@ export default function Navbar(props) {
         <Box sx={styles.styleNavbarUserOperations}>
           {user ? (
             <>
-              <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-                <Typography variant="h6">Hello, {user.displayName}</Typography>
+              <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                 <Button variant="contained" color="success">
                   {capital && (
                     <Typography sx={{ fontWeight: "bold" }}>
