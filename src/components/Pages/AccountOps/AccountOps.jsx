@@ -30,9 +30,7 @@ export default function AccountOps() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user === null) navigate("/");
-  });
+  useEffect(() => {}, [user]);
 
   const apiTokenTooltipText =
     "This application uses iexcloud.io to fetch financial data. You can provide your own token after registering there.";
@@ -102,6 +100,7 @@ export default function AccountOps() {
     newPassword.current = e.target.value;
     if (newPassword.current !== "") {
       setNewValue(true);
+      setError(null);
       if (checkAlphaNumericInput(newPassword.current)) {
         setNewPasswordError(false);
         setNewPasswordHelperText(null);
@@ -118,6 +117,7 @@ export default function AccountOps() {
     newDisplayName.current = e.target.value;
     if (newDisplayName.current !== "") {
       setNewValue(true);
+      setError(null);
       if (checkAlphaInput(newDisplayName.current)) {
         setNewDisplayNameError(false);
         setNewDisplayNameHelperText(null);
@@ -134,6 +134,7 @@ export default function AccountOps() {
     newCapital.current = e.target.value;
     if (newCapital.current !== "") {
       setNewValue(true);
+      setError(null);
       if (checkNumericInput(newCapital.current)) {
         setNewCapitalError(false);
         setNewCapitalHelperText(null);
@@ -148,8 +149,10 @@ export default function AccountOps() {
 
   const handleNewApiTokenChange = (e) => {
     newApiToken.current = e.target.value;
-    if (newApiToken.current !== "") setNewValue(true);
-    else setNewValue(false);
+    if (newApiToken.current !== "") {
+      setNewValue(true);
+      setError(null);
+    } else setNewValue(false);
   };
 
   const handleAccountOperation = async () => {
@@ -197,7 +200,6 @@ export default function AccountOps() {
       .then((response) => {
         if (response.ok) {
           response.json().then((response) => {
-            console.log(response);
             setApplyButtonText("Apply changes");
             if (choice === "password") {
               setUser(null);
@@ -222,7 +224,6 @@ export default function AccountOps() {
           });
         } else {
           return response.json().then((response) => {
-            console.log(response);
             throw {
               status: response.status,
               message: response.message,
@@ -231,7 +232,6 @@ export default function AccountOps() {
         }
       })
       .catch((responseError) => {
-        console.log(responseError);
         setError(responseError.message);
         setLoading(false);
       });
@@ -287,8 +287,7 @@ export default function AccountOps() {
           <Box
             sx={{
               display: "flex",
-              minWidth: "200px",
-              maxWidth: "30%",
+              width: "300px",
               flexDirection: "column",
               padding: "1%",
               margin: "1%",

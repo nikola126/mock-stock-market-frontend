@@ -1,5 +1,6 @@
-import { Box, Link, Stack, Typography } from "@mui/material";
+import { Link, Stack, Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import AddchartIcon from "@mui/icons-material/Addchart";
 
 export default function Footer() {
   return (
@@ -18,12 +19,13 @@ export default function Footer() {
           <GitHubIcon sx={{ verticalAlign: "middle" }}></GitHubIcon>
           <Link href="https://github.com/nikola126/mock-stock-market">
             Backend
-          </Link>
-          {" "}
+          </Link>{" "}
           <GitHubIcon sx={{ verticalAlign: "middle" }}></GitHubIcon>
           <Link href="https://github.com/nikola126/mock-stock-market-frontend">
             Frontend
-          </Link>
+          </Link>{" "}
+          <AddchartIcon sx={{ verticalAlign: "middle" }}></AddchartIcon>
+          <Link href="https://iexcloud.io/">IEX Cloud</Link>
         </Typography>
       </Stack>
     </>

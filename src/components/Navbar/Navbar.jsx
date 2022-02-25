@@ -1,132 +1,29 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ReactDOM from "react-dom";
 import Box from "@mui/material/Box";
-import { Button, Stack, Typography, Snackbar, Alert } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import LoginModal from "../LoginModal/LoginModal";
-import RegisterModal from "../RegisterModal/RegisterModal";
-import { endpoints } from "../../constants/endpoints";
 import UserContext from "../Context/UserContext";
 import * as styles from "./Styles";
 
 export default function Navbar(props) {
-  const { user, setUser, capital, setCapital, portfolio, setPortfolio } =
+  const { user, capital, portfolio } =
     useContext(UserContext);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [toast, setToast] = useState(false);
-  const [toastSeverity, setToastSeverity] = useState("info");
-  const [toastMessage, setToastMessage] = useState(null);
 
   const navigate = useNavigate();
-  const portalElement = document.getElementById("overlays");
 
   useEffect(() => {}, [user, capital, portfolio]);
 
   const handleSignInClick = () => {
-    setError(null);
-    setShowLoginModal(true);
+    props.handleSignInClick();
   };
 
   const handleSignOutClick = () => {
-    setUser(null);
-    setPortfolio(null);
-    openToast("Logged out.", "info");
-    navigate("/");
+    props.handleSignOutClick();
   };
 
   const handleSignUpClick = () => {
-    setShowRegisterModal(true);
-  };
-
-  const handleModalClose = () => {
-    setShowLoginModal(false);
-    setShowRegisterModal(false);
-    setError(null);
-  };
-
-  const handleLogin = async (username, password) => {
-    setLoading(true);
-    fetch(endpoints().userLogin, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username: username, password: password }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          response.json().then((response) => {
-            console.log(response);
-            setUser(response);
-            setCapital(response.capital);
-            setShowLoginModal(false);
-            setLoading(false);
-            openToast("Logged in as " + response.displayName, "success");
-            props.updatePortfolio(response.id);
-          });
-        } else {
-          return response.json().then((response) => {
-            console.log(response);
-            throw {
-              status: response.status,
-              message: response.message,
-            };
-          });
-        }
-      })
-      .catch((responseError) => {
-        console.log(responseError);
-        setError(responseError);
-        setLoading(false);
-      });
-  };
-
-  const handleRegister = async (username, password, displayName, capital) => {
-    setLoading(true);
-    fetch(endpoints().userRegister, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-        displayName: displayName,
-        capital: capital,
-      }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          response.json().then((response) => {
-            console.log(response);
-            setUser(response);
-            setCapital(response.capital);
-            props.updatePortfolio(response.id);
-            setShowRegisterModal(false);
-            setLoading(false);
-            openToast("Logged in as " + response.displayName, "success");
-          });
-        } else {
-          return response.json().then((response) => {
-            console.log(response);
-            throw {
-              status: response.status,
-              message: response.message,
-            };
-          });
-        }
-      })
-      .catch((responseError) => {
-        console.log(responseError);
-        setError(responseError);
-        setLoading(false);
-      });
+    props.handleSignUpClick();
   };
 
   const handleGetQuote = () => {
@@ -145,51 +42,8 @@ export default function Navbar(props) {
     navigate("/account");
   };
 
-  const openToast = (message, severity) => {
-    setToastMessage(message);
-    setToastSeverity(severity);
-    setToast(true);
-  };
-
-  const closeToast = () => {
-    setToastMessage(null);
-    setToastSeverity("info");
-    setToast(false);
-  };
-
   return (
     <>
-      {showLoginModal &&
-        ReactDOM.createPortal(
-          <LoginModal
-            show={showLoginModal}
-            loading={loading}
-            error={error}
-            handleLogin={handleLogin}
-            handleModalClose={handleModalClose}
-          />,
-          portalElement
-        )}
-      {showRegisterModal &&
-        ReactDOM.createPortal(
-          <RegisterModal
-            show={showRegisterModal}
-            loading={loading}
-            error={error}
-            handleRegister={handleRegister}
-            handleModalClose={handleModalClose}
-          />,
-          portalElement
-        )}
-      {toast &&
-        ReactDOM.createPortal(
-          <>
-            <Snackbar open={toast} autoHideDuration={3000} onClose={closeToast}>
-              <Alert severity={toastSeverity}>{toastMessage}</Alert>
-            </Snackbar>
-          </>,
-          portalElement
-        )}
       <Box sx={styles.styleNavbar}>
         <Box sx={{ padding: "5px" }}>
           <Typography variant="h5">Mock Stock Market</Typography>

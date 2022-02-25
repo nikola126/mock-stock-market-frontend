@@ -30,7 +30,6 @@ export default function PortfolioPage(props) {
   };
 
   const handleClickBuy = (asset) => {
-    console.log(asset);
     setQuote({
       symbol: asset.stock.symbol,
       companyName: asset.stock.name,
@@ -41,7 +40,6 @@ export default function PortfolioPage(props) {
   };
 
   const handleClickSell = (asset) => {
-    console.log(asset);
     setQuote({
       symbol: asset.stock.symbol,
       companyName: asset.stock.name,
@@ -68,13 +66,11 @@ export default function PortfolioPage(props) {
       .then((response) => {
         if (response.ok) {
           response.json().then((response) => {
-            console.log(response);
             props.updatePortfolio(user.id);
             openToast(symbol + " price updated.", "info");
           });
         } else {
           return response.json().then((response) => {
-            console.log(response);
             throw {
               status: response.status,
               message: response.message,
@@ -83,7 +79,6 @@ export default function PortfolioPage(props) {
         }
       })
       .catch((responseError) => {
-        console.log(responseError);
       });
   };
 
@@ -127,7 +122,6 @@ export default function PortfolioPage(props) {
       .then((response) => {
         if (response.ok) {
           response.json().then((response) => {
-            console.log(response);
             props.updatePortfolio(user.id);
             setQuote(null);
             setCapital(updatedCapital);
@@ -138,7 +132,6 @@ export default function PortfolioPage(props) {
           });
         } else {
           return response.json().then((response) => {
-            console.log(response);
             throw {
               status: response.status,
               message: response.message,
@@ -190,7 +183,7 @@ export default function PortfolioPage(props) {
         )}
       {error && (
         <Typography align="center" variant="h6">
-          {error.message}
+          {error}
         </Typography>
       )}
       {loading && (
@@ -204,7 +197,7 @@ export default function PortfolioPage(props) {
             <Grid container columns={{ md: 2, lg: 2 }}>
               {portfolio.map((asset) => (
                 <Asset
-                  key={asset.stock.lastUpdate % 100}
+                  key={asset.stock.lastUpdate}
                   asset={asset}
                   handleUpdateClick={handleUpdateClick}
                   handleClickBuy={handleClickBuy}

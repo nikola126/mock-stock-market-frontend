@@ -15,7 +15,7 @@ export default function HistoryEntry(props) {
 
   return (
     <Card
-      key={props.entry.date % 1000}
+      key={props.entry.date / 1000}
       sx={{
         display: "flex",
         flexDirection: "column",

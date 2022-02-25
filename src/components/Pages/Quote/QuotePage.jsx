@@ -64,14 +64,12 @@ export default function QuotePage(props) {
       .then((response) => {
         if (response.ok) {
           response.json().then((response) => {
-            console.log(response);
             setQuote(response);
             setError(null);
             setLoading(false);
           });
         } else {
           return response.json().then((response) => {
-            console.log(response);
             throw {
               status: response.status,
               message: response.message,
@@ -80,7 +78,6 @@ export default function QuotePage(props) {
         }
       })
       .catch((responseError) => {
-        console.log(responseError);
         setQuote(null);
         setError(responseError);
         setLoading(false);
@@ -115,7 +112,6 @@ export default function QuotePage(props) {
       .then((response) => {
         if (response.ok) {
           response.json().then((response) => {
-            console.log(response);
             props.updatePortfolio(user.id);
             setQuote(quote);
             setCapital(updatedCapital);
@@ -126,7 +122,6 @@ export default function QuotePage(props) {
           });
         } else {
           return response.json().then((response) => {
-            console.log(response);
             throw {
               status: response.status,
               message: response.message,
@@ -135,8 +130,7 @@ export default function QuotePage(props) {
         }
       })
       .catch((responseError) => {
-        console.log(responseError);
-        setError(responseError);
+        setError(responseError.message);
         setLoading(false);
       });
   };
@@ -209,7 +203,7 @@ export default function QuotePage(props) {
         <Stack sx={styles.styleQuoteForm} spacing={"1%"}>
           {error ? (
             <Typography variant="h6" sx={{ color: "red" }}>
-              {error.message}
+              {error}
             </Typography>
           ) : (
             <Typography variant="h6">

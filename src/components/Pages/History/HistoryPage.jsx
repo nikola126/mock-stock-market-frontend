@@ -12,6 +12,10 @@ export default function HistoryPage(props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
+  useEffect(() => {
+    if (user) getHistory();
+  }, [user]);
+
   const getHistory = async () => {
     setLoading(true);
     fetch(endpoints().transactionGet, {
@@ -26,12 +30,10 @@ export default function HistoryPage(props) {
         if (response.ok) {
           response.json().then((response) => {
             setHistory(response);
-            console.log(response);
             setLoading(false);
           });
         } else {
           return response.json().then((response) => {
-            console.log(response);
             throw {
               status: response.status,
               message: response.message,
@@ -68,7 +70,7 @@ export default function HistoryPage(props) {
         {history && (
           <>
             {history.map((entry) => (
-              <HistoryEntry entry={entry} />
+              <HistoryEntry key={entry.date} entry={entry} />
             ))}
           </>
         )}
