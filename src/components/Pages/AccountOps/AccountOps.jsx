@@ -87,6 +87,8 @@ export default function AccountOps() {
   };
 
   const handlePasswordBlur = () => {
+    if (password.current === "") return;
+
     if (checkAlphaNumericInput(password.current)) {
       setPasswordError(false);
       setPasswordHelperText(null);
@@ -362,7 +364,7 @@ export default function AccountOps() {
               <TextField
                 label="New Password"
                 onChange={handleNewPasswordChange}
-                erorr={newPasswordError}
+                error={newPasswordError}
                 helperText={newPasswordHelperText}
               ></TextField>
             )}
@@ -370,7 +372,7 @@ export default function AccountOps() {
               <TextField
                 label="New Display Name"
                 onChange={handleNewDisplayNameChange}
-                erorr={newDisplayNameError}
+                error={newDisplayNameError}
                 helperText={newDisplayNameHelperText}
               ></TextField>
             )}

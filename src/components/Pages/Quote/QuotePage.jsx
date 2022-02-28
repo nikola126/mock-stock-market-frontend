@@ -79,7 +79,7 @@ export default function QuotePage(props) {
       })
       .catch((responseError) => {
         setQuote(null);
-        setError(responseError);
+        setError(responseError.message);
         setLoading(false);
       });
   };
