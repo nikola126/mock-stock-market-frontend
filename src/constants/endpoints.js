@@ -1,5 +1,7 @@
 export const endpoints = () => {
-  const hostUrl = "http://localhost:8080";
+  // TODO Proxy this
+  // TODO Separate configuration for development/production
+  const hostUrl = "http://159.223.28.181:8080";
 
   return {
     userLogin: `${hostUrl}/users/login`,
