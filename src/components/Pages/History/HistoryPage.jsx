@@ -206,7 +206,7 @@ export default function HistoryPage(props) {
             Fetching All Transactions...
           </Typography>
         )}
-        {history.length > 0 ? (
+        {history && history.length > 0 ? (
           <>
             {history.map((entry) => (
               <HistoryEntry key={entry.date} entry={entry} />
