@@ -206,12 +206,16 @@ export default function HistoryPage(props) {
             Fetching All Transactions...
           </Typography>
         )}
-        {history && (
+        {history.length > 0 ? (
           <>
             {history.map((entry) => (
               <HistoryEntry key={entry.date} entry={entry} />
             ))}
           </>
+        ) : (
+          <Typography align="center" variant="h5">
+            No transactions with currently selected filters!
+          </Typography>
         )}
       </Box>
       <HistoryFooter

@@ -46,7 +46,7 @@ export default function HistoryPanel(props) {
               variant="contained"
               color="primary"
               onClick={props.handlePrevPageClick}
-              disabled={props.currentPage === 0}
+              disabled={props.currentPage === 0 || props.totalPages === 0}
             >
               <NavigateBeforeIcon />
             </IconButton>
@@ -57,7 +57,10 @@ export default function HistoryPanel(props) {
               variant="contained"
               color="primary"
               onClick={props.handleNextPageClick}
-              disabled={props.currentPage === props.totalPages - 1}
+              disabled={
+                props.currentPage === props.totalPages - 1 ||
+                props.totalPages === 0
+              }
             >
               <NavigateNextIcon />
             </IconButton>

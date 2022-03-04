@@ -13,6 +13,6 @@ export const endpoints = () => {
     stockUpdate: `${hostUrl}/stocks/update`,
     assetsGet: `${hostUrl}/assets/get`,
     transactionAdd: `${hostUrl}/transactions/add`,
-    transactionGet: `${hostUrl}/transactions/get`
+    transactionGet: `${hostUrl}/transactions/get`,
   };
 };
