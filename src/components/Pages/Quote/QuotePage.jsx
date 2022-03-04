@@ -111,15 +111,13 @@ export default function QuotePage(props) {
     })
       .then((response) => {
         if (response.ok) {
-          response.json().then((response) => {
-            props.updatePortfolio(user.id);
-            setQuote(quote);
-            setCapital(updatedCapital);
-            setLoading(false);
-            handleModalClose();
-            if (action === "BUY") openToast("Purchase successful", "success");
-            else openToast("Sale successfull", "success");
-          });
+          props.updatePortfolio(user.id);
+          setQuote(quote);
+          setCapital(updatedCapital);
+          setLoading(false);
+          handleModalClose();
+          if (action === "BUY") openToast("Purchase successful", "success");
+          else openToast("Sale successfull", "success");
         } else {
           return response.json().then((response) => {
             throw {

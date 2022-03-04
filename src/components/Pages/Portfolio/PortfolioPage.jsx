@@ -78,8 +78,7 @@ export default function PortfolioPage(props) {
           });
         }
       })
-      .catch((responseError) => {
-      });
+      .catch((responseError) => {});
   };
 
   const openToast = (message, severity) => {
@@ -121,15 +120,13 @@ export default function PortfolioPage(props) {
     })
       .then((response) => {
         if (response.ok) {
-          response.json().then((response) => {
-            props.updatePortfolio(user.id);
-            setQuote(null);
-            setCapital(updatedCapital);
-            setLoading(false);
-            handleModalClose();
-            if (action === "BUY") openToast("Purchase successful", "success");
-            else openToast("Sale successfull", "success");
-          });
+          props.updatePortfolio(user.id);
+          setQuote(null);
+          setCapital(updatedCapital);
+          setLoading(false);
+          handleModalClose();
+          if (action === "BUY") openToast("Purchase successful", "success");
+          else openToast("Sale successfull", "success");
         } else {
           return response.json().then((response) => {
             throw {
