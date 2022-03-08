@@ -1,6 +1,8 @@
 import { Link, Stack, Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import AddchartIcon from "@mui/icons-material/Addchart";
+import ArchitectureIcon from "@mui/icons-material/Architecture";
+import { endpoints } from "../../constants/endpoints";
 
 export default function Footer() {
   return (
@@ -25,7 +27,9 @@ export default function Footer() {
             Frontend
           </Link>{" "}
           <AddchartIcon sx={{ verticalAlign: "middle" }}></AddchartIcon>
-          <Link href="https://iexcloud.io/">IEX Cloud</Link>
+          <Link href="https://iexcloud.io/">IEX Cloud</Link>{" "}
+          <ArchitectureIcon sx={{ verticalAlign: "middle" }}></ArchitectureIcon>
+          <Link href={endpoints().grafana}>Grafana</Link>
         </Typography>
       </Stack>
     </>
