@@ -36,6 +36,8 @@ export default function QuotePage(props) {
 
   const [quote, setQuote] = useState(null);
   const [history, setHistory] = useState(null);
+  const [historyUnits, setHistoryUnits] = useState("d");
+  const [historyInterval, setHistoryInterval] = useState(14);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -51,11 +53,6 @@ export default function QuotePage(props) {
     quoteField.current = e.target.value;
     if (e.target.value === "") setButtonDisabled(true);
     else setButtonDisabled(false);
-  };
-
-  const handleQuoteClick = (e) => {
-    handleGetQuote();
-    handleGetHistory();
   };
 
   const handleGetQuote = async () => {
@@ -94,6 +91,8 @@ export default function QuotePage(props) {
 
   const handleGetHistory = async () => {
     setLoading(true);
+    const userId = user ? user.id : null;
+
     fetch(endpoints().historyGet, {
       method: "POST",
       headers: {
@@ -102,8 +101,8 @@ export default function QuotePage(props) {
       },
       body: JSON.stringify({
         symbol: quoteField.current,
-        userId: user.id,
-        range: "90d",
+        userId: userId,
+        range: historyInterval + historyUnits,
       }),
     })
       .then((response) => {
@@ -260,7 +259,7 @@ export default function QuotePage(props) {
           <Button
             variant="contained"
             disabled={buttonDisabled || loading}
-            onClick={handleQuoteClick}
+            onClick={handleGetQuote}
           >
             Get Quote
           </Button>
@@ -272,7 +271,14 @@ export default function QuotePage(props) {
             handleClickSell={handleClickSell}
           />
         )}
-        {history && <History history={history} quote={quote} />}
+        {history && (
+          <History
+            history={history}
+            quote={quote}
+            historyUnits={historyUnits}
+            historyInterval={historyInterval}
+          />
+        )}
       </Box>
     </>
   );

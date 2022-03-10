@@ -1,5 +1,5 @@
 import { Box, Card, Typography } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import * as styles from "./Styles";
 import UserContext from "../../Context/UserContext";
 import {
@@ -16,58 +16,61 @@ import { Line } from "react-chartjs-2";
 
 export default function History(props) {
   const { user, capital, portfolio } = useContext(UserContext);
-  const [units, setUnits] = useState("d");
-  const [number, setNumber] = useState(30);
 
-  const quote = props.quote;
-  var history = props.history.data;
-  history.push({ close: quote.latestPrice, date: "Today" });
+  const [plotData, setPlotData] = useState(null);
+  const [plotOptions, setPlotOptions] = useState(null);
 
-  console.log(quote);
-  console.log(history);
+  useEffect(() => {
+    const quote = props.quote;
+    var history = props.history.data;
+    history.push({ close: quote.latestPrice, date: "Today" });
 
-  const labels = history.map((entry) => entry.date);
-  const values = history.map((entry) => entry.close);
+    console.log(quote);
+    console.log(history);
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: false,
+    const labels = history.map((entry) => entry.date);
+    const values = history.map((entry) => entry.close);
+
+    setPlotOptions({
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false,
+        },
+        title: {
+          display: false,
+          text: quote.companyName,
+        },
       },
-      title: {
-        display: false,
-        text: quote.companyName,
+      scales: {
+        x: {
+          display: false, // Hide X axis labels
+        },
       },
-    },
-    scales: {
-      x: {
-        display: false, // Hide Y axis labels
-      },
-    },
-  };
+    });
 
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: quote.companyName,
-        data: values,
-        borderColor: "#03c2fc",
-        backgroundColor: "#0394fc",
-      },
-    ],
-  };
+    setPlotData({
+      labels,
+      datasets: [
+        {
+          label: quote.companyName,
+          data: values,
+          borderColor: "#03c2fc",
+          backgroundColor: "#0394fc",
+        },
+      ],
+    });
 
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-  );
+    ChartJS.register(
+      CategoryScale,
+      LinearScale,
+      PointElement,
+      LineElement,
+      Title,
+      Tooltip,
+      Legend
+    );
+  }, [props.history, props.quote]);
 
   return (
     <Box
@@ -75,9 +78,9 @@ export default function History(props) {
     >
       <Card variant="outlined" sx={styles.styleHistoryComponent()}>
         <Typography variant="h6">
-          Last {number} {units}
+          Last {props.historyInterval} {props.historyUnits}
         </Typography>
-        <Line options={options} data={data} />
+        {plotData && <Line options={plotOptions} data={plotData} />}
       </Card>
     </Box>
   );
