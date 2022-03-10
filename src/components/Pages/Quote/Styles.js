@@ -18,7 +18,7 @@ export const styleQuoteComponent = (theme) => {
     justifyContent: "center",
     alignItems: "center",
     padding: "1%",
-    margin: "1% 1% 10% 1%",
+    margin: "1% 1% 1% 1%",
     minWidth: "300px",
     backgroundColor: "white",
     border: "1px solid #000",
@@ -47,3 +47,22 @@ export const styleQuoteBackground = (theme) => ({
   fontSize: "20vh",
   opacity: "10%",
 });
+
+export const styleHistoryComponent = () => {
+  return {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "1%",
+    margin: "1% 1% 5% 1%",
+    minWidth: "300px",
+    backgroundColor: "white",
+    border: "1px solid #000",
+    borderRadius: "10px",
+    boxShadow: 10,
+    overflow: "hidden",
+    position: "relative",
+    userSelect: "none",
+  };
+};

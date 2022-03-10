@@ -2,6 +2,7 @@ import { Box, Button, Stack, Typography, Snackbar, Alert } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { endpoints } from "../../../constants/endpoints";
 import Quote from "./Quote";
+import History from "./History";
 import { useState, useContext } from "react";
 import UserContext from "../../Context/UserContext";
 import * as styles from "./Styles";
@@ -34,6 +35,7 @@ export default function QuotePage(props) {
   );
 
   const [quote, setQuote] = useState(null);
+  const [history, setHistory] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -51,6 +53,11 @@ export default function QuotePage(props) {
     else setButtonDisabled(false);
   };
 
+  const handleQuoteClick = (e) => {
+    handleGetQuote();
+    handleGetHistory();
+  };
+
   const handleGetQuote = async () => {
     setLoading(true);
     fetch(endpoints().stockGet, {
@@ -65,6 +72,44 @@ export default function QuotePage(props) {
         if (response.ok) {
           response.json().then((response) => {
             setQuote(response);
+            handleGetHistory();
+            setError(null);
+            setLoading(false);
+          });
+        } else {
+          return response.json().then((response) => {
+            throw {
+              status: response.status,
+              message: response.message,
+            };
+          });
+        }
+      })
+      .catch((responseError) => {
+        setQuote(null);
+        setError(responseError.message);
+        setLoading(false);
+      });
+  };
+
+  const handleGetHistory = async () => {
+    setLoading(true);
+    fetch(endpoints().historyGet, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        symbol: quoteField.current,
+        userId: user.id,
+        range: "90d",
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((response) => {
+            setHistory(response);
             setError(null);
             setLoading(false);
           });
@@ -215,7 +260,7 @@ export default function QuotePage(props) {
           <Button
             variant="contained"
             disabled={buttonDisabled || loading}
-            onClick={handleGetQuote}
+            onClick={handleQuoteClick}
           >
             Get Quote
           </Button>
@@ -227,6 +272,7 @@ export default function QuotePage(props) {
             handleClickSell={handleClickSell}
           />
         )}
+        {history && <History history={history} quote={quote} />}
       </Box>
     </>
   );

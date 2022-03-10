@@ -10,6 +10,7 @@ export const endpoints = () => {
     userEdit: `${hostUrl}/users/edit`,
     userDelete: `${hostUrl}/users/delete`,
     stockGet: `${hostUrl}/stocks/get`,
+    historyGet: `${hostUrl}/stocks/history`,
     stockUpdate: `${hostUrl}/stocks/update`,
     assetsGet: `${hostUrl}/assets/get`,
     transactionAdd: `${hostUrl}/transactions/add`,
