@@ -14,6 +14,7 @@ export const endpoints = () => {
     assetsGet: `${hostUrl}/assets/get`,
     transactionAdd: `${hostUrl}/transactions/add`,
     transactionGet: `${hostUrl}/transactions/get`,
+    transactionGetUnpaged: `${hostUrl}/transactions/get/unpaged`,
     grafana: `http://localhost:3001`,
   };
 };

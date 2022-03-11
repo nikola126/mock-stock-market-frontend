@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import React, { useState, useContext, useEffect } from "react";
 import HistoryEntry from "./HistoryEntry";
+import HistoryPlot from "./HistoryPlot";
 import UserContext from "../../Context/UserContext";
 import { endpoints } from "../../../constants/endpoints";
 import HistoryPanel from "./HistoryPanel";
@@ -10,8 +11,11 @@ export default function HistoryPage(props) {
   const { user, capital, setCapital, portfolio } = useContext(UserContext);
 
   const [history, setHistory] = useState(null);
+  const [historyPaged, setHistoryPaged] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  const [showPlot, setShowPlot] = useState(false);
 
   const [pageSizeMenuOpened, setPageSizeMenuOpened] = useState(false);
   const [pageSizeMenuAnchor, setPageSizeMenuAnchor] = useState(null);
@@ -33,10 +37,13 @@ export default function HistoryPage(props) {
   const [totalTransactions, setTotalTransactions] = useState(0);
 
   useEffect(() => {
-    if (user) getHistory();
+    if (user) {
+      getHistoryPaged();
+      getHistory();
+    }
   }, [user]);
 
-  const getHistory = async () => {
+  const getHistoryPaged = async () => {
     setLoading(true);
     fetch(
       endpoints().transactionGet +
@@ -63,7 +70,7 @@ export default function HistoryPage(props) {
       .then((response) => {
         if (response.ok) {
           response.json().then((response) => {
-            setHistory(response.content);
+            setHistoryPaged(response.content);
             setTotalPages(response.totalPages);
             setTotalTransactions(response.totalElements);
             setLoading(false);
@@ -84,9 +91,52 @@ export default function HistoryPage(props) {
       });
   };
 
+  const getHistory = async () => {
+    setLoading(true);
+    fetch(endpoints().transactionGetUnpaged, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user.id,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((response) => {
+            var sorted = response.content;
+            sorted.sort((a, b) =>
+              a.date > b.date ? 1 : b.date > a.date ? -1 : 0
+            );
+            setHistory(sorted);
+            setShowPlot(true);
+            setLoading(false);
+            setError(null);
+          });
+        } else {
+          return response.json().then((response) => {
+            throw {
+              status: response.status,
+              message: response.message,
+            };
+          });
+        }
+      })
+      .catch((responseError) => {
+        setError(responseError.message);
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
-    getHistory();
+    getHistoryPaged();
   }, [currentPage, pageSize, sortDirection, sortField, actions]);
+
+  const handleShowPlot = () => {
+    setShowPlot(!showPlot);
+  };
 
   const handleNextPageClick = () => {
     setCurrentPage(currentPage + 1);
@@ -171,12 +221,17 @@ export default function HistoryPage(props) {
   return (
     <>
       {error && <Typography variant="error">{error}</Typography>}
+      {history && showPlot && (
+        <HistoryPlot history={history} handleShowPlot={handleShowPlot} />
+      )}
       <HistoryPanel
         currentPage={currentPage}
         pageSize={pageSize}
         sortField={sortField}
         totalPages={totalPages}
         totalTransactions={totalTransactions}
+        showPlot={showPlot}
+        handleShowPlot={handleShowPlot}
         handlePrevPageClick={handlePrevPageClick}
         handleNextPageClick={handleNextPageClick}
         handlePageSizeMenuClose={handlePageSizeMenuClose}
@@ -206,9 +261,9 @@ export default function HistoryPage(props) {
             Fetching All Transactions...
           </Typography>
         )}
-        {history && history.length > 0 ? (
+        {historyPaged && historyPaged.length > 0 ? (
           <>
-            {history.map((entry) => (
+            {historyPaged.map((entry) => (
               <HistoryEntry key={entry.date} entry={entry} />
             ))}
           </>

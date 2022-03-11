@@ -91,6 +91,11 @@ export default function HistoryPanel(props) {
         </Stack>
         <Box>
           <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+            {!props.showPlot && (
+              <Button variant="outlined" onClick={props.handleShowPlot}>
+                Show Plot
+              </Button>
+            )}
             <Button variant="outlined" onClick={props.handlePageSizeMenuOpen}>
               per page: {props.pageSize}
             </Button>
