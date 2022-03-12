@@ -1,6 +1,4 @@
-import { Box, Stack, Button, Card, Typography, TextField } from "@mui/material";
-import { useContext, useState, useRef, useEffect } from "react";
-import UserContext from "../../Context/UserContext";
+import { useState, useRef, useEffect } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,12 +10,20 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import {
+  Box,
+  Stack,
+  Button,
+  Card,
+  Typography,
+  TextField,
+  Tooltip as MUITooltip,
+} from "@mui/material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { dateToTextFieldDefault } from "../../../utilities/DateToTextFieldDefault";
 import { TextFieldToDate } from "../../../utilities/TextFieldToDate";
 
 export default function HistoryPlot(props) {
-  const { user, capital, portfolio } = useContext(UserContext);
-
   const [plotComplete, setPlotComplete] = useState(false);
   const [plotData, setPlotData] = useState(null);
   const [plotOptions, setPlotOptions] = useState(null);
@@ -27,6 +33,14 @@ export default function HistoryPlot(props) {
   const [endDate, setEndDate] = useState(null);
   const [startDateError, setStartDateError] = useState(false);
   const [endDateError, setEndDateError] = useState(false);
+
+  const plotTooltipHelpText = (
+    <div style={{ whiteSpace: "pre-line" }}>
+      {
+        "This graph shows the changes in net-worth of your account over time.\nClick on specific legend entries to filter them out.\nYou can also specify a date range using the fields below."
+      }
+    </div>
+  );
 
   const redraw = () => {
     setPlotComplete(false);
@@ -106,22 +120,22 @@ export default function HistoryPlot(props) {
             }
           }
         } else {
-          var previous = deltasALL[deltasALL.length - 1];
+          var previousDelta = deltasALL[deltasALL.length - 1];
           if (delta.action === "ADD") {
-            deltasALL.push(previous + delta.price);
-            deltasDEPOSIT.push(previous + delta.price);
+            deltasALL.push(previousDelta + delta.price);
+            deltasDEPOSIT.push(previousDelta + delta.price);
             deltasBUY.push(null);
             deltasSELL.push(null);
           } else if (delta.action === "BUY") {
-            deltasALL.push(previous - delta.price * delta.shares);
+            deltasALL.push(previousDelta - delta.price * delta.shares);
             deltasDEPOSIT.push(null);
-            deltasBUY.push(previous - delta.price * delta.shares);
+            deltasBUY.push(previousDelta - delta.price * delta.shares);
             deltasSELL.push(null);
           } else if (delta.action === "SELL") {
-            deltasALL.push(previous + delta.price * delta.shares);
+            deltasALL.push(previousDelta + delta.price * delta.shares);
             deltasDEPOSIT.push(null);
             deltasBUY.push(null);
-            deltasSELL.push(previous + delta.price * delta.shares);
+            deltasSELL.push(previousDelta + delta.price * delta.shares);
           }
         }
       }
@@ -269,8 +283,11 @@ export default function HistoryPlot(props) {
           position: "relative",
         }}
       >
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
           <Typography variant="h6">Account Net Worth Summary</Typography>
+          <MUITooltip title={plotTooltipHelpText}>
+            <HelpOutlineIcon color="disabled" />
+          </MUITooltip>
           <Button variant="outlined" size="small" onClick={handlePlotReset}>
             Reset
           </Button>
@@ -285,29 +302,33 @@ export default function HistoryPlot(props) {
         {plotComplete && (
           <>
             <Line options={plotOptions} data={plotData} />
+            <Stack
+              direction="column"
+              spacing={1}
+              sx={{ padding: "3%", width: "95%", justifyContent: "center" }}
+            >
+              <TextField
+                id="startDate"
+                label="Start Date"
+                type="date"
+                size="small"
+                defaultValue={dateToTextFieldDefault(globalStartDate.current)}
+                InputLabelProps={{ shrink: true }}
+                onChange={handleStartDateChange}
+                error={startDateError}
+              ></TextField>
+              <TextField
+                id="endDate"
+                label="End Date"
+                type="date"
+                size="small"
+                defaultValue={dateToTextFieldDefault(globalEndDate.current)}
+                InputLabelProps={{ shrink: true }}
+                onChange={handleEndDateChange}
+                error={endDateError}
+              ></TextField>
+            </Stack>
           </>
-        )}
-        {plotComplete && (
-          <Stack direction="row" spacing={1} sx={{ padding: "3%" }}>
-            <TextField
-              id="startDate"
-              label="Start Date"
-              type="date"
-              defaultValue={dateToTextFieldDefault(globalStartDate.current)}
-              InputLabelProps={{ shrink: true }}
-              onChange={handleStartDateChange}
-              error={startDateError}
-            ></TextField>
-            <TextField
-              id="endDate"
-              label="End Date"
-              type="date"
-              defaultValue={dateToTextFieldDefault(globalEndDate.current)}
-              InputLabelProps={{ shrink: true }}
-              onChange={handleEndDateChange}
-              error={endDateError}
-            ></TextField>
-          </Stack>
         )}
       </Card>
     </Box>
