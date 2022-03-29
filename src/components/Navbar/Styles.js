@@ -1,21 +1,13 @@
 export const styleNavbar = (theme) => ({
-  // width: "100%",
   display: "flex",
   flexWrap: "wrap",
   alignItems: "center",
   justifyContent: "space-between",
+  width: "100%",
 });
 
 export const styleNavbarTabs = (theme) => ({
   display: "flex",
   alignItems: "center",
-  justifyContent: "space-between",
-  padding: "5px",
-});
-
-export const styleNavbarUserOperations = (theme) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "5px",
+  padding: "2px",
 });

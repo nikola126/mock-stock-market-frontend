@@ -341,7 +341,7 @@ export default function AccountOps() {
                   label={
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       Change API Token
-                      <Tooltip title={apiTokenTooltipText}>
+                      <Tooltip title={apiTokenTooltipText} placement="top">
                         <HelpOutlineIcon color="disabled" />
                       </Tooltip>
                     </Box>

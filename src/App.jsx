@@ -14,6 +14,7 @@ import PageNotFound from "./components/Pages/NotFound/PageNotFound";
 import { Snackbar, Alert } from "@mui/material";
 import HistoryPage from "./components/Pages/History/HistoryPage";
 import AccountOps from "./components/Pages/AccountOps/AccountOps";
+import HotListPage from "./components/Pages/Hotlist/HotlistPage";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -182,8 +183,7 @@ export default function App() {
           });
         }
       })
-      .catch((responseError) => {
-      });
+      .catch((responseError) => {});
   };
 
   return (
@@ -248,6 +248,7 @@ export default function App() {
           />
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/account" element={<AccountOps />} />
+          <Route path="/hotlist" element={<HotListPage />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </UserContext.Provider>

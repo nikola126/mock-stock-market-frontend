@@ -285,7 +285,7 @@ export default function HistoryPlot(props) {
       >
         <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
           <Typography variant="h6">Account Net Worth Summary</Typography>
-          <MUITooltip title={plotTooltipHelpText}>
+          <MUITooltip title={plotTooltipHelpText} placement="top">
             <HelpOutlineIcon color="disabled" />
           </MUITooltip>
           <Button variant="outlined" size="small" onClick={handlePlotReset}>

@@ -49,7 +49,9 @@ export default function Asset(props) {
         {props.asset.stock.symbol}
       </Typography>
       <Typography variant="h7" align="center">
-        {props.asset.stock.name}
+        {props.asset.stock.name.length > 15
+          ? props.asset.stock.name.substring(0, 15) + "..."
+          : props.asset.stock.name}
       </Typography>
       <Typography variant="h7" align="center">
         Latest price: {props.asset.stock.price}

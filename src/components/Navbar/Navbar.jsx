@@ -7,8 +7,7 @@ import UserContext from "../Context/UserContext";
 import * as styles from "./Styles";
 
 export default function Navbar(props) {
-  const { user, capital, portfolio } =
-    useContext(UserContext);
+  const { user, capital, portfolio } = useContext(UserContext);
 
   const navigate = useNavigate();
 
@@ -42,6 +41,10 @@ export default function Navbar(props) {
     navigate("/account");
   };
 
+  const handleGetHotlist = () => {
+    navigate("/hotlist");
+  };
+
   return (
     <>
       <Box sx={styles.styleNavbar}>
@@ -51,63 +54,62 @@ export default function Navbar(props) {
             <Typography variant="h7">Hello {user.displayName}!</Typography>
           )}
         </Box>
-        <Box sx={styles.styleNavbarTabs}>
-          <Stack direction="row" spacing={1}>
-            <Button variant="contained" onClick={handleGetQuote}>
-              Get Quote
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleGetPortfolio}
-              disabled={user === null}
-            >
-              My Portfolio
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleGetHistory}
-              disabled={user === null}
-            >
-              Transaction History
-            </Button>
-          </Stack>
-        </Box>
-        <Box sx={styles.styleNavbarUserOperations}>
+        <Stack direction="row" spacing={1} sx={styles.styleNavbarTabs}>
+          <Button variant="contained" onClick={handleGetQuote}>
+            Quote
+          </Button>
+          <Button variant="contained" onClick={handleGetHotlist}>
+            HotList
+          </Button>
+        </Stack>
+        <Stack direction="row" spacing={1} sx={styles.styleNavbarTabs}>
+          <Button
+            variant="contained"
+            onClick={handleGetPortfolio}
+            disabled={user === null}
+          >
+            Portfolio
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleGetHistory}
+            disabled={user === null}
+          >
+            History
+          </Button>
+        </Stack>
+        <Stack direction="row" spacing={1} sx={styles.styleNavbarTabs}>
           {user ? (
             <>
-              <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-                <Button variant="contained" color="success">
-                  {capital && (
-                    <Typography sx={{ fontWeight: "bold" }}>
-                      $ {capital.toFixed(2)}
-                    </Typography>
-                  )}
-                </Button>
-                <Button
-                  variant="contained"
-                  startIcon={<ManageAccountsIcon />}
-                  onClick={handleGetAccountOps}
-                >
-                  Account Operations
-                </Button>
-                <Button variant="outlined" onClick={handleSignOutClick}>
-                  Sign Out
-                </Button>
-              </Stack>
+              <Button variant="contained" color="success">
+                {capital && (
+                  <Typography sx={{ fontWeight: "bold" }}>
+                    $ {capital.toFixed(2)}
+                  </Typography>
+                )}
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<ManageAccountsIcon />}
+                onClick={handleGetAccountOps}
+              >
+                Account
+              </Button>
+              <Button variant="outlined" onClick={handleSignOutClick}>
+                Sign Out
+              </Button>
             </>
           ) : (
             <>
-              <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-                <Button variant="contained" onClick={handleSignInClick}>
-                  Sign In
-                </Button>
-                <Button variant="outlined" onClick={handleSignUpClick}>
-                  Sign Up
-                </Button>
-              </Stack>
+              <Button variant="contained" onClick={handleSignInClick}>
+                Sign In
+              </Button>
+              <Button variant="outlined" onClick={handleSignUpClick}>
+                Sign Up
+              </Button>
             </>
           )}
-        </Box>
+        </Stack>
       </Box>
     </>
   );
