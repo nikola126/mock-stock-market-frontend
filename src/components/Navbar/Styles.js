@@ -10,4 +10,5 @@ export const styleNavbarTabs = (theme) => ({
   display: "flex",
   alignItems: "center",
   padding: "2px",
+  overflow: "hidden",
 });

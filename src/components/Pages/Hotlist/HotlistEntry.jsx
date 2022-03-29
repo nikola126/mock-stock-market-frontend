@@ -10,7 +10,7 @@ export default function HotlistEntry(props) {
         justifyContent: "center",
         alignItems: "center",
         padding: "10px",
-        margin: "1% 1% 1% 1%",
+        margin: "5px 5px 5px 5px",
         minWidth: "350px",
         maxWidth: "90%",
         height: "50px",

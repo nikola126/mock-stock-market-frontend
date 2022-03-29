@@ -61,8 +61,6 @@ export default function Navbar(props) {
           <Button variant="contained" onClick={handleGetHotlist}>
             HotList
           </Button>
-        </Stack>
-        <Stack direction="row" spacing={1} sx={styles.styleNavbarTabs}>
           <Button
             variant="contained"
             onClick={handleGetPortfolio}
