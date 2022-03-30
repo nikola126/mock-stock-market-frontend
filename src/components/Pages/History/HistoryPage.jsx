@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import React, { useState, useContext, useEffect } from "react";
 import HistoryEntry from "./HistoryEntry";
 import HistoryPlot from "./HistoryPlot";
+import NetworthPlot from "./NetworthPlot";
 import UserContext from "../../Context/UserContext";
 import { endpoints } from "../../../constants/endpoints";
 import HistoryPanel from "./HistoryPanel";
@@ -11,6 +12,8 @@ export default function HistoryPage(props) {
   const { user, capital, setCapital, portfolio } = useContext(UserContext);
 
   const [history, setHistory] = useState(null);
+  const [networth, setNetworth] = useState(null);
+  const [networthCurrent, setNetworthCurrent] = useState(null);
   const [historyPaged, setHistoryPaged] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -40,6 +43,7 @@ export default function HistoryPage(props) {
     if (user) {
       getHistoryPaged();
       getHistory();
+      getNetWorth();
     }
   }, [user]);
 
@@ -111,6 +115,42 @@ export default function HistoryPage(props) {
               a.date > b.date ? 1 : b.date > a.date ? -1 : 0
             );
             setHistory(sorted);
+            setShowPlot(true);
+            setLoading(false);
+            setError(null);
+          });
+        } else {
+          return response.json().then((response) => {
+            throw {
+              status: response.status,
+              message: response.message,
+            };
+          });
+        }
+      })
+      .catch((responseError) => {
+        setError(responseError.message);
+        setLoading(false);
+      });
+  };
+
+  const getNetWorth = async () => {
+    setLoading(true);
+    fetch(endpoints().networthGet, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user.id,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((response) => {
+            console.log(response);
+            setNetworth(response);
             setShowPlot(true);
             setLoading(false);
             setError(null);
@@ -221,8 +261,18 @@ export default function HistoryPage(props) {
   return (
     <>
       {error && <Typography variant="error">{error}</Typography>}
-      {history && showPlot && (
-        <HistoryPlot history={history} handleShowPlot={handleShowPlot} />
+      {history && networth && showPlot && (
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <HistoryPlot history={history} handleShowPlot={handleShowPlot} />
+          <NetworthPlot networth={networth} />
+        </Box>
       )}
       <HistoryPanel
         currentPage={currentPage}

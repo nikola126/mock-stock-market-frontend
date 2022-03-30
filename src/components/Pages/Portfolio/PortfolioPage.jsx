@@ -189,7 +189,7 @@ export default function PortfolioPage(props) {
         </Typography>
       )}
       {portfolio && (
-        <Box sx={{ padding: "5%" }}>
+        <Box sx={{ padding: "2%" }}>
           {portfolio.length > 0 ? (
             <Grid container columns={{ md: 2, lg: 2 }}>
               {portfolio.map((asset) => (

@@ -8,6 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import TimelineIcon from '@mui/icons-material/Timeline';
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import SortIcon from "@mui/icons-material/Sort";
@@ -91,9 +92,13 @@ export default function HistoryPanel(props) {
         </Stack>
         <Box>
           <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-            {!props.showPlot && (
-              <Button variant="outlined" onClick={props.handleShowPlot}>
-                Show Plot
+            {props.showPlot ? (
+              <Button variant="outlined" startIcon={<TimelineIcon />} onClick={props.handleShowPlot}>
+                Hide Plots
+              </Button>
+            ) : (
+              <Button variant="outlined" startIcon={<TimelineIcon />} onClick={props.handleShowPlot}>
+                Show Plots
               </Button>
             )}
             <Button variant="outlined" onClick={props.handlePageSizeMenuOpen}>

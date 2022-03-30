@@ -29,6 +29,8 @@ export default function HistoryPlot(props) {
   const [plotOptions, setPlotOptions] = useState(null);
   const globalStartDate = useRef(null);
   const globalEndDate = useRef(null);
+  const [startDateInputValue, setStartDateInputValue] = useState(null);
+  const [endDateInputValue, setEndDateInputValue] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [startDateError, setStartDateError] = useState(false);
@@ -37,7 +39,7 @@ export default function HistoryPlot(props) {
   const plotTooltipHelpText = (
     <div style={{ whiteSpace: "pre-line" }}>
       {
-        "This graph shows the changes in net-worth of your account over time.\nClick on specific legend entries to filter them out.\nYou can also specify a date range using the fields below."
+        "This graph shows the changes in available assets of your account over time.\nClick on specific legend entries to filter them out.\nYou can also specify a date range using the fields below."
       }
     </div>
   );
@@ -207,6 +209,8 @@ export default function HistoryPlot(props) {
     globalStartDate.current = new Date(history[0].date);
     globalEndDate.current = new Date(history[history.length - 1].date);
 
+    setStartDateInputValue(dateToTextFieldDefault(globalStartDate.current));
+    setEndDateInputValue(dateToTextFieldDefault(globalEndDate.current));
     setStartDate(globalStartDate.current);
     setEndDate(globalEndDate.current);
 
@@ -218,6 +222,7 @@ export default function HistoryPlot(props) {
   }, [startDate, endDate]);
 
   const handleStartDateChange = (e) => {
+    setStartDateInputValue(e.target.value);
     const newDate = TextFieldToDate(e.target.value);
 
     if (globalStartDate.current <= newDate && newDate < globalEndDate.current) {
@@ -236,6 +241,7 @@ export default function HistoryPlot(props) {
   };
 
   const handleEndDateChange = (e) => {
+    setEndDateInputValue(e.target.value);
     const newDate = TextFieldToDate(e.target.value);
 
     if (globalStartDate.current <= newDate && newDate < globalEndDate.current) {
@@ -257,12 +263,20 @@ export default function HistoryPlot(props) {
   const handlePlotReset = (e) => {
     setStartDate(globalStartDate.current);
     setEndDate(globalEndDate.current);
+    setStartDateInputValue(dateToTextFieldDefault(globalStartDate.current));
+    setEndDateInputValue(dateToTextFieldDefault(globalEndDate.current));
+    setStartDateError(false);
+    setEndDateError(false);
     redraw();
   };
 
   return (
     <Box
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      sx={{
+        justifyContent: "center",
+        alignItems: "center",
+        minWidth: "50%",
+      }}
     >
       <Card
         variant="outlined"
@@ -283,22 +297,31 @@ export default function HistoryPlot(props) {
           position: "relative",
         }}
       >
-        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-          <Typography variant="h6">Account Net Worth Summary</Typography>
-          <MUITooltip title={plotTooltipHelpText} placement="top">
-            <HelpOutlineIcon color="disabled" />
-          </MUITooltip>
-          <Button variant="outlined" size="small" onClick={handlePlotReset}>
-            Reset
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={props.handleShowPlot}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          <Typography variant="h6">Account Net Asset Summary</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
           >
-            Hide
-          </Button>
-        </Stack>
+            <MUITooltip title={plotTooltipHelpText} placement="top">
+              <HelpOutlineIcon color="disabled" />
+            </MUITooltip>
+            <Button variant="outlined" size="small" onClick={handlePlotReset}>
+              Reset
+            </Button>
+          </Box>
+        </Box>
         {plotComplete && (
           <>
             <Line options={plotOptions} data={plotData} />
@@ -312,20 +335,20 @@ export default function HistoryPlot(props) {
                 label="Start Date"
                 type="date"
                 size="small"
-                defaultValue={dateToTextFieldDefault(globalStartDate.current)}
                 InputLabelProps={{ shrink: true }}
                 onChange={handleStartDateChange}
                 error={startDateError}
+                value={startDateInputValue}
               ></TextField>
               <TextField
                 id="endDate"
                 label="End Date"
                 type="date"
                 size="small"
-                defaultValue={dateToTextFieldDefault(globalEndDate.current)}
                 InputLabelProps={{ shrink: true }}
                 onChange={handleEndDateChange}
                 error={endDateError}
+                value={endDateInputValue}
               ></TextField>
             </Stack>
           </>
