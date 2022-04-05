@@ -43,7 +43,8 @@ export default function HistoryPage(props) {
     if (user) {
       getHistoryPaged();
       getHistory();
-      getNetWorth();
+      getNetWorthAll();
+      props.updateCurrentNetworth(user.id);
     }
   }, [user]);
 
@@ -134,9 +135,9 @@ export default function HistoryPage(props) {
       });
   };
 
-  const getNetWorth = async () => {
+  const getNetWorthAll = async () => {
     setLoading(true);
-    fetch(endpoints().networthGet, {
+    fetch(endpoints().networthGetAll, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -149,7 +150,6 @@ export default function HistoryPage(props) {
       .then((response) => {
         if (response.ok) {
           response.json().then((response) => {
-            console.log(response);
             setNetworth(response);
             setShowPlot(true);
             setLoading(false);

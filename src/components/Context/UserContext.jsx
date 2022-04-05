@@ -5,6 +5,8 @@ const UserContext = createContext({
   setUser: (values) => {},
   capital: {},
   setCapital: (values) => {},
+  networth: {},
+  setNetworth: (values) => {},
   portfolio: {},
   setPortfolio: (values) => {},
 });

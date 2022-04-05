@@ -19,6 +19,7 @@ import HotListPage from "./components/Pages/Hotlist/HotlistPage";
 export default function App() {
   const [user, setUser] = useState(null);
   const [portfolio, setPortfolio] = useState(null);
+  const [networth, setNetworth] = useState(null);
   const [capital, setCapital] = useState(null);
 
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -106,6 +107,7 @@ export default function App() {
             setLoading(false);
             openToast("Logged in as " + response.displayName, "success");
             updatePortfolio(response.id);
+            updateCurrentNetworth(response.id);
           });
         } else {
           return response.json().then((response) => {
@@ -173,6 +175,33 @@ export default function App() {
         if (response.ok) {
           response.json().then((response) => {
             setPortfolio(response);
+            updateCurrentNetworth(id);
+          });
+        } else {
+          return response.json().then((response) => {
+            throw {
+              status: response.status,
+              message: response.message,
+            };
+          });
+        }
+      })
+      .catch((responseError) => {});
+  };
+
+  const updateCurrentNetworth = async (id) => {
+    fetch(endpoints().networthGetCurrent, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: id }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((response) => {
+            setNetworth(response);
           });
         } else {
           return response.json().then((response) => {
@@ -189,7 +218,16 @@ export default function App() {
   return (
     <>
       <UserContext.Provider
-        value={{ user, setUser, capital, setCapital, portfolio, setPortfolio }}
+        value={{
+          user,
+          setUser,
+          capital,
+          setCapital,
+          networth,
+          setNetworth,
+          portfolio,
+          setPortfolio,
+        }}
       >
         {showLoginModal &&
           ReactDOM.createPortal(
@@ -227,7 +265,6 @@ export default function App() {
             portalElement
           )}
         <Navbar
-          updatePortfolio={updatePortfolio}
           handleSignInClick={handleSignInClick}
           handleSignOutClick={handleSignOutClick}
           handleSignUpClick={handleSignUpClick}
@@ -246,7 +283,12 @@ export default function App() {
             path="/portfolio"
             element={<PortfolioPage updatePortfolio={updatePortfolio} />}
           />
-          <Route path="/history" element={<HistoryPage />} />
+          <Route
+            path="/history"
+            element={
+              <HistoryPage updateCurrentNetworth={updateCurrentNetworth} />
+            }
+          />
           <Route path="/account" element={<AccountOps />} />
           <Route path="/hotlist" element={<HotListPage />} />
           <Route path="*" element={<PageNotFound />} />

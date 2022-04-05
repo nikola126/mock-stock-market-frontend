@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,10 +20,17 @@ import {
   Tooltip as MUITooltip,
 } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import UserContext from "../../Context/UserContext";
 import { dateToTextFieldDefault } from "../../../utilities/DateToTextFieldDefault";
 import { TextFieldToDate } from "../../../utilities/TextFieldToDate";
 
 export default function HistoryPlot(props) {
+  const {
+    user,
+    capital,
+    networth: currentNetworth,
+    portfolio,
+  } = useContext(UserContext);
   const [plotComplete, setPlotComplete] = useState(false);
   const [plotData, setPlotData] = useState(null);
   const [plotOptions, setPlotOptions] = useState(null);
@@ -39,7 +46,7 @@ export default function HistoryPlot(props) {
   const plotTooltipHelpText = (
     <div style={{ whiteSpace: "pre-line" }}>
       {
-        "This graph shows the changes in net worth of your account over time.\nAutomatically generated daily."
+        "This graph shows the changes in net worth of your account over time.\nGenerated periodically."
       }
     </div>
   );
@@ -57,7 +64,11 @@ export default function HistoryPlot(props) {
     var labels = [];
     for (const [index, delta] of Object.entries(networth)) {
       if (startDate <= delta.date && delta.date <= endDate)
-        labels.push(new Date(delta.date).toLocaleDateString());
+        labels.push(
+          new Date(delta.date).toLocaleDateString() +
+            " " +
+            delta.networth.toFixed(2)
+        );
     }
 
     var totals = [];
@@ -70,7 +81,7 @@ export default function HistoryPlot(props) {
       responsive: true,
       plugins: {
         legend: {
-          display: false,
+          display: true,
         },
         title: {
           display: false,
@@ -87,6 +98,7 @@ export default function HistoryPlot(props) {
       labels,
       datasets: [
         totals && {
+          label: "Current: " + currentNetworth.toFixed(2),
           data: totals,
           borderColor: "#03c2fc",
           backgroundColor: "#0394fc",
@@ -230,9 +242,9 @@ export default function HistoryPlot(props) {
         </Box>
         {plotComplete && (
           <>
-            <Typography>
+            {/* <Typography>
               Current Net Worth: {props.networth[props.networth.length - 1].networth.toFixed(2)}
-            </Typography>
+            </Typography> */}
             {plotData ? (
               <>
                 <Line options={plotOptions} data={plotData} />
@@ -246,9 +258,6 @@ export default function HistoryPlot(props) {
                     label="Start Date"
                     type="date"
                     size="small"
-                    defaultValue={dateToTextFieldDefault(
-                      globalStartDate.current
-                    )}
                     InputLabelProps={{ shrink: true }}
                     onChange={handleStartDateChange}
                     error={startDateError}
@@ -259,7 +268,6 @@ export default function HistoryPlot(props) {
                     label="End Date"
                     type="date"
                     size="small"
-                    defaultValue={dateToTextFieldDefault(globalEndDate.current)}
                     InputLabelProps={{ shrink: true }}
                     onChange={handleEndDateChange}
                     error={endDateError}

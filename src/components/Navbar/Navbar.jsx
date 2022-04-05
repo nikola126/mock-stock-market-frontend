@@ -2,16 +2,15 @@ import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { Button, Stack, Typography } from "@mui/material";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import UserContext from "../Context/UserContext";
 import * as styles from "./Styles";
 
 export default function Navbar(props) {
-  const { user, capital, portfolio } = useContext(UserContext);
+  const { user, capital, networth, portfolio } = useContext(UserContext);
 
   const navigate = useNavigate();
 
-  useEffect(() => {}, [user, capital, portfolio]);
+  useEffect(() => {}, [user, capital, networth, portfolio]);
 
   const handleSignInClick = () => {
     props.handleSignInClick();
@@ -79,23 +78,31 @@ export default function Navbar(props) {
         <Stack direction="row" spacing={1} sx={styles.styleNavbarTabs}>
           {user ? (
             <>
-              <Button variant="contained" color="success">
-                {capital && (
-                  <Typography sx={{ fontWeight: "bold" }}>
-                    $ {capital.toFixed(2)}
-                  </Typography>
-                )}
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<ManageAccountsIcon />}
-                onClick={handleGetAccountOps}
-              >
-                Account
-              </Button>
-              <Button variant="outlined" onClick={handleSignOutClick}>
-                Sign Out
-              </Button>
+              <Stack direction="row" spacing={1} sx={styles.styleNavbarTabs}>
+                <Button variant="contained" color="success">
+                  {capital && (
+                    <Typography sx={{ fontWeight: "bold" }}>
+                      Funds ${capital.toFixed(2)}
+                    </Typography>
+                  )}
+                </Button>
+                <Button variant="contained" color="success">
+                  {networth && (
+                    <Typography sx={{ fontWeight: "bold" }}>
+                      Net ${networth.toFixed(2)}
+                    </Typography>
+                  )}
+                </Button>
+              </Stack>
+              <Stack direction="row" spacing={1} sx={styles.styleNavbarTabs}>
+                <Button variant="contained" 
+                onClick={handleGetAccountOps}>
+                  Account
+                </Button>
+                <Button variant="outlined" onClick={handleSignOutClick}>
+                  Sign Out
+                </Button>
+              </Stack>
             </>
           ) : (
             <>

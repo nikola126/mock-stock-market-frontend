@@ -111,7 +111,7 @@ export default function HotListPage(props) {
             />
             <Box
               sx={{
-                minWidth: "350px",
+                minWidth: "90%",
                 maxWidth: "90%",
                 display: "flex",
                 alignItems: "center",

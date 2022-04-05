@@ -1,4 +1,13 @@
-import { Box, Grid, Typography, Snackbar, Alert } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Stack,
+  Typography,
+  Snackbar,
+  Alert,
+  Button,
+} from "@mui/material";
+import PieChartIcon from "@mui/icons-material/PieChart";
 import React, { useState, useContext, useEffect } from "react";
 import ReactDOM from "react-dom";
 import UserContext from "../../Context/UserContext";
@@ -6,11 +15,15 @@ import Asset from "./Asset";
 import TransactionModalBuy from "../../TransactionModal/TransactionModalBuy";
 import TransactionModalSell from "../../TransactionModal/TransactionModalSell";
 import { endpoints } from "../../../constants/endpoints";
+import PortfolioDiversityPlot from "./PortfolioDiversityPlot";
 
 export default function PortfolioPage(props) {
   const { user, capital, setCapital, portfolio } = useContext(UserContext);
 
   const [showModal, setShowModal] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [showPortfolioDiversityPlot, setShowPortfolioDiversityPlot] =
+    useState(false);
   const [quote, setQuote] = useState(null);
   const [action, setAction] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -20,6 +33,7 @@ export default function PortfolioPage(props) {
   const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
+    console.log(portfolio);
     if (user) props.updatePortfolio(user.id);
   }, []);
 
@@ -143,6 +157,10 @@ export default function PortfolioPage(props) {
       });
   };
 
+  const handleShowPortfolioDiversityClick = () => {
+    setShowPortfolioDiversityPlot(!showPortfolioDiversityPlot);
+  };
+
   const portalElement = document.getElementById("overlays");
 
   return (
@@ -191,18 +209,49 @@ export default function PortfolioPage(props) {
       {portfolio && (
         <Box sx={{ padding: "2%" }}>
           {portfolio.length > 0 ? (
-            <Grid container columns={{ md: 2, lg: 2 }}>
-              {portfolio.map((asset) => (
-                <Asset
-                  key={asset.stock.lastUpdate}
-                  asset={asset}
-                  handleUpdateClick={handleUpdateClick}
-                  handleClickBuy={handleClickBuy}
-                  handleClickSell={handleClickSell}
-                  loading={loading}
-                />
-              ))}
-            </Grid>
+            <>
+              <Box sx={{ padding: "5px" }}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ alignItems: "center" }}
+                >
+                  {showPortfolioDiversityPlot ? (
+                    <Button
+                      variant="outlined"
+                      startIcon={<PieChartIcon />}
+                      onClick={handleShowPortfolioDiversityClick}
+                    >
+                      Hide Diversity
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      startIcon={<PieChartIcon />}
+                      onClick={handleShowPortfolioDiversityClick}
+                    >
+                      Show Diversity
+                    </Button>
+                  )}
+                </Stack>
+              </Box>
+              {showPortfolioDiversityPlot && (
+                <PortfolioDiversityPlot portfolio={portfolio} />
+              )}
+              <Grid container columns={{ md: 2, lg: 2 }}>
+                {portfolio.map((asset) => (
+                  <Asset
+                    key={asset.stock.lastUpdate}
+                    asset={asset}
+                    currentTime={currentTime}
+                    handleUpdateClick={handleUpdateClick}
+                    handleClickBuy={handleClickBuy}
+                    handleClickSell={handleClickSell}
+                    loading={loading}
+                  />
+                ))}
+              </Grid>
+            </>
           ) : (
             <Typography align="center" variant="h5">
               You don't own any stocks yet! Click Get Quote and start trading!
