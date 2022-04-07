@@ -33,7 +33,6 @@ export default function PortfolioPage(props) {
   const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
-    console.log(portfolio);
     if (user) props.updatePortfolio(user.id);
   }, []);
 

@@ -95,7 +95,7 @@ export default function HotListPage(props) {
         </Typography>
 
         {error && <Typography variant="error">{error}</Typography>}
-        {hotlistPaged && hotlistPaged.length > 0 && (
+        {!loading && hotlistPaged && hotlistPaged.length > 0 && (
           <>
             <HotlistPanel
               currentPage={currentPage}

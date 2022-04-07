@@ -20,6 +20,7 @@ import {
   Tooltip as MUITooltip,
 } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import RecentItemsFilter from "./RecentItemsFilter";
 import { dateToTextFieldDefault } from "../../../utilities/DateToTextFieldDefault";
 import { TextFieldToDate } from "../../../utilities/TextFieldToDate";
 
@@ -328,7 +329,7 @@ export default function HistoryPlot(props) {
             <Stack
               direction="column"
               spacing={1}
-              sx={{ padding: "3%", width: "95%", justifyContent: "center" }}
+              sx={{ padding: "2%", width: "95%", justifyContent: "center" }}
             >
               <TextField
                 id="startDate"
@@ -351,6 +352,13 @@ export default function HistoryPlot(props) {
                 value={endDateInputValue}
               ></TextField>
             </Stack>
+            <RecentItemsFilter
+              globalStartDate={globalStartDate}
+              globalEndDate={globalEndDate}
+              handlePlotReset={handlePlotReset}
+              handleStartDateChange={handleStartDateChange}
+              setStartDate={setStartDate}
+            />
           </>
         )}
       </Card>
