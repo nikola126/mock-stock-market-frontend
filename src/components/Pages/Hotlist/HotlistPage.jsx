@@ -95,6 +95,7 @@ export default function HotListPage(props) {
         </Typography>
 
         {error && <Typography variant="error">{error}</Typography>}
+        {loading && <Typography align="center" variant="h7">Fetching Hotlist...</Typography>}
         {!loading && hotlistPaged && hotlistPaged.length > 0 && (
           <>
             <HotlistPanel

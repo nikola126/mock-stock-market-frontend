@@ -57,7 +57,7 @@ export default function HistoryPlot(props) {
     setPlotData(null);
     var networth = props.networth;
 
-    if (networth.length < 1) {
+    if (networth.length < 1 || !currentNetworth) {
       setPlotComplete(true);
       return;
     }
@@ -67,8 +67,8 @@ export default function HistoryPlot(props) {
       if (startDate <= delta.date && delta.date <= endDate)
         labels.push(
           new Date(delta.date).toLocaleDateString() +
-            " " +
-            delta.networth.toFixed(2)
+          " " +
+          delta.networth.toFixed(2)
         );
     }
 
@@ -134,7 +134,7 @@ export default function HistoryPlot(props) {
     }
 
     redraw();
-  }, [props.networth]);
+  }, [props.networth, currentNetworth]);
 
   useEffect(() => {
     if (startDate !== null && endDate !== null) redraw();

@@ -58,20 +58,20 @@ export default function HistoryPlot(props) {
         else if (delta.action === "SELL")
           labels.push(
             "SELL " +
-              delta.shares +
-              "*" +
-              delta.symbol +
-              " " +
-              new Date(delta.date).toLocaleDateString()
+            delta.shares +
+            "*" +
+            delta.symbol +
+            " " +
+            new Date(delta.date).toLocaleDateString()
           );
         else if (delta.action === "BUY")
           labels.push(
             "BUY " +
-              delta.shares +
-              "*" +
-              delta.symbol +
-              " " +
-              new Date(delta.date).toLocaleDateString()
+            delta.shares +
+            "*" +
+            delta.symbol +
+            " " +
+            new Date(delta.date).toLocaleDateString()
           );
       }
     }

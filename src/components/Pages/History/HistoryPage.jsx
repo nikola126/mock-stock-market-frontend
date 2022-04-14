@@ -52,14 +52,14 @@ export default function HistoryPage(props) {
     setLoading(true);
     fetch(
       endpoints().transactionGet +
-        "?page=" +
-        currentPage +
-        "&size=" +
-        pageSize +
-        "&sort=" +
-        sortField +
-        "," +
-        sortDirection,
+      "?page=" +
+      currentPage +
+      "&size=" +
+      pageSize +
+      "&sort=" +
+      sortField +
+      "," +
+      sortDirection,
       {
         method: "POST",
         headers: {
@@ -171,7 +171,8 @@ export default function HistoryPage(props) {
   };
 
   useEffect(() => {
-    getHistoryPaged();
+    if (user)
+      getHistoryPaged();
   }, [currentPage, pageSize, sortDirection, sortField, actions]);
 
   const handleShowPlot = () => {
