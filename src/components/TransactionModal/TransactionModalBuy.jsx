@@ -8,11 +8,12 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 export default function TransactionModalBuy(props) {
   const { capital, portfolio } = useContext(UserContext);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [value, setValue] = useState(0);
   const [quote, setQuote] = useState(props.quote);
   const [assetOwned, setAssetOwned] = useState(
     portfolio &&
-      portfolio.filter((asset) => asset.stock.symbol === quote.symbol)
+    portfolio.filter((asset) => asset.stock.symbol === quote.symbol)
   );
   const [maxShares, setMaxShares] = useState(
     Math.floor(capital / quote.latestPrice)
@@ -20,7 +21,10 @@ export default function TransactionModalBuy(props) {
   const [newCapital, setNewCapital] = useState(capital);
 
   const clearModal = () => {
-    props.handleModalClose();
+    if (showConfirmation)
+      setShowConfirmation(false);
+    else
+      props.handleModalClose();
   };
 
   const handleSliderChange = (event, newValue) => {
@@ -48,7 +52,12 @@ export default function TransactionModalBuy(props) {
   };
 
   const handleBuyStock = () => {
-    props.handleTransaction(value, "BUY", quote.latestPrice);
+    if (showConfirmation) {
+      setMaxShares(null);
+      setShowConfirmation(false);
+      props.handleTransaction(value, "BUY", quote.latestPrice);
+    } else
+      setShowConfirmation(true);
   };
 
   return (
@@ -79,15 +88,21 @@ export default function TransactionModalBuy(props) {
                 <h3>{props.error.message}</h3>
               </Typography>
             )}
-            {assetOwned.length > 0 ? (
+            {!showConfirmation ? (<>
+              {assetOwned.length > 0 ? (
+                <Typography align="center" variant="h5">
+                  You own {assetOwned[0].shares} shares from {quote.companyName}
+                </Typography>
+              ) : (
+                <Typography align="center" variant="h5">
+                  You don't own any shares from {quote.companyName}
+                </Typography>
+              )}
+            </>) : (<>
               <Typography align="center" variant="h5">
-                You own {assetOwned[0].shares} shares from {quote.companyName}
+                Confirm PURCHASE of {value} shares from {quote.companyName}
               </Typography>
-            ) : (
-              <Typography>
-                You don't own any shares from {quote.companyName}
-              </Typography>
-            )}
+            </>)}
             <Box
               spacing={1}
               sx={{
@@ -103,6 +118,7 @@ export default function TransactionModalBuy(props) {
                 max={maxShares}
                 onChange={handleSliderChange}
                 sx={{ width: "70%" }}
+                disabled={showConfirmation}
               />
               <Input
                 value={value}
@@ -115,6 +131,7 @@ export default function TransactionModalBuy(props) {
                   max: maxShares,
                   type: "number",
                 }}
+                disabled={showConfirmation}
               />
             </Box>
           </Stack>

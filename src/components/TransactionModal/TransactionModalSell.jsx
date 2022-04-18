@@ -8,6 +8,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 export default function TransactionModalSell(props) {
   const { capital, portfolio } = useContext(UserContext);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [value, setValue] = useState(0);
   const [quote, setQuote] = useState(props.quote);
   const [maxShares, setMaxShares] = useState(
@@ -16,7 +17,10 @@ export default function TransactionModalSell(props) {
   const [newCapital, setNewCapital] = useState(capital);
 
   const clearModal = () => {
-    props.handleModalClose();
+    if (showConfirmation)
+      setShowConfirmation(false);
+    else
+      props.handleModalClose();
   };
 
   const handleSliderChange = (event, newValue) => {
@@ -44,8 +48,12 @@ export default function TransactionModalSell(props) {
   };
 
   const handleSellStock = () => {
-    setMaxShares(null);
-    props.handleTransaction(value, "SELL", quote.latestPrice);
+    if (showConfirmation) {
+      setMaxShares(null);
+      setShowConfirmation(false);
+      props.handleTransaction(value, "SELL", quote.latestPrice);
+    } else
+      setShowConfirmation(true);
   };
 
   return (
@@ -76,15 +84,21 @@ export default function TransactionModalSell(props) {
                 <h3>{props.error.message}</h3>
               </Typography>
             )}
-            {maxShares !== null ? (
+            {!showConfirmation ? (<>
+              {maxShares !== null ? (
+                <Typography align="center" variant="h5">
+                  You own {maxShares} shares from {quote.companyName}
+                </Typography>
+              ) : (
+                <Typography align="center" variant="h5">
+                  You don't own any shares from {quote.companyName}
+                </Typography>
+              )}
+            </>) : (<>
               <Typography align="center" variant="h5">
-                You own {maxShares} shares from {quote.companyName}
+                Confirm SALE of {value} shares from {quote.companyName}
               </Typography>
-            ) : (
-              <Typography>
-                You don't own any shares from {quote.companyName}
-              </Typography>
-            )}
+            </>)}
             <Box
               spacing={1}
               sx={{
@@ -100,6 +114,7 @@ export default function TransactionModalSell(props) {
                 max={maxShares}
                 onChange={handleSliderChange}
                 sx={{ width: "70%" }}
+                disabled={showConfirmation}
               />
               <Input
                 value={value}
@@ -112,6 +127,7 @@ export default function TransactionModalSell(props) {
                   max: maxShares,
                   type: "number",
                 }}
+                disabled={showConfirmation}
               />
             </Box>
           </Stack>
