@@ -2,11 +2,11 @@ import { Box, Button, Stack, Typography, Snackbar, Alert } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { endpoints } from "../../../constants/endpoints";
 import Quote from "./Quote";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import UserContext from "../../Context/UserContext";
 import * as styles from "./Styles";
 import { getRandomInt } from "../../../utilities/RandInt";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ReactDOM from "react-dom";
 import { useRef } from "react";
 import TransactionModalBuy from "../../TransactionModal/TransactionModalBuy";
@@ -14,6 +14,7 @@ import TransactionModalSell from "../../TransactionModal/TransactionModalSell";
 
 export default function QuotePage(props) {
   const { user, capital, setCapital } = useContext(UserContext);
+  const location = useLocation();
 
   const placeHolderSymbols = [
     "AMZN",
@@ -160,6 +161,14 @@ export default function QuotePage(props) {
     setToast(false);
   };
 
+  useEffect(() => {
+    // Enable Get Quote Button after redirection from Hotlist
+    if (location.state !== null) {
+      setButtonDisabled(false);
+      quoteField.current = location.state.symbolAfterRedirection;
+    }
+  }, []);
+
   const navigate = useNavigate();
   const portalElement = document.getElementById("overlays");
 
@@ -205,11 +214,13 @@ export default function QuotePage(props) {
             </Typography>
           ) : (
             <Typography variant="h6">
-              Enter Quote to get real-time data
+              Enter Symbol to get real-time data
             </Typography>
           )}
           <TextField
+            autoFocus={true}
             placeholder={stockPlaceHolder}
+            defaultValue={location.state ? (location.state.symbolAfterRedirection) : (null)}
             onChange={handleQuoteFieldChange}
           ></TextField>
           <Button

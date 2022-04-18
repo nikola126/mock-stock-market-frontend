@@ -1,5 +1,9 @@
-import { Box, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import ReactDOM from "react-dom";
+import { Box, Typography, Tooltip, Stack } from "@mui/material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HotlistEntry from "./HotlistEntry";
 import { endpoints } from "../../../constants/endpoints";
 import HotlistPanel from "./HotlistPanel";
@@ -16,6 +20,16 @@ export default function HotListPage(props) {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  const navigate = useNavigate();
+
+  const plotTooltipHelpText = (
+    <div style={{ whiteSpace: "pre-line" }}>
+      {
+        "Displays the most popular stocks according to all users.\nClick on an entry in the hotlist to request a quote!"
+      }
+    </div>
+  );
 
   const getHotlistPaged = async () => {
     setLoading(true);
@@ -80,6 +94,10 @@ export default function HotListPage(props) {
     setPageSizeMenuAnchor(null);
   };
 
+  const handleEntryClick = (symbol) => {
+    navigate("/get", { state: { symbolAfterRedirection: symbol } });
+  }
+
   return (
     <>
       <Box
@@ -90,10 +108,20 @@ export default function HotListPage(props) {
           padding: "1%",
         }}
       >
-        <Typography align="center" variant="h5">
-          Most Popular Stocks
-        </Typography>
-
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Typography align="center" variant="h5">
+            Most Popular Stocks
+          </Typography>
+          <Tooltip title={plotTooltipHelpText} placement="top">
+            <HelpOutlineIcon color="disabled" />
+          </Tooltip>
+        </Box>
         {error && <Typography variant="error">{error}</Typography>}
         {loading && <Typography align="center" variant="h7">Fetching Hotlist...</Typography>}
         {!loading && hotlistPaged && hotlistPaged.length > 0 && (
@@ -130,7 +158,7 @@ export default function HotListPage(props) {
               </Typography>
             </Box>
             {hotlistPaged.map((entry) => (
-              <HotlistEntry key={entry.stockSymbol} entry={entry} />
+              <HotlistEntry key={entry.stockSymbol} entry={entry} handleEntryClick={handleEntryClick} />
             ))}
           </>
         )}

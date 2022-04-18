@@ -1,6 +1,11 @@
 import { Typography, Card, Stack } from "@mui/material";
 
 export default function HotlistEntry(props) {
+
+  const handleEntryClick = () => {
+    props.handleEntryClick(props.entry.stockSymbol)
+  }
+
   return (
     <Card
       key={props.entry.stockSymbol}
@@ -19,7 +24,12 @@ export default function HotlistEntry(props) {
         borderRadius: "5px",
         boxShadow: 5,
         position: "relative",
+        ":hover": {
+          backgroundColor: "#b3e0ff",
+          boxShadow: 10,
+        }
       }}
+      onClick={handleEntryClick}
     >
       <Stack
         direction="row"
@@ -30,12 +40,12 @@ export default function HotlistEntry(props) {
           justifyContent: "space-between",
         }}
       >
-        <Typography align="left" sx={{width:"30%"}}>{props.entry.usersOwning}</Typography>
-        <Typography align="center" sx={{width:"30%"}}>{props.entry.stockSymbol}</Typography>
-        <Typography align="right" sx={{width:"40%"}}>
-        {props.entry.stockName.length > 15
-          ? props.entry.stockName.substring(0, 15) + "..."
-          : props.entry.stockName}
+        <Typography align="left" sx={{ width: "30%" }}>{props.entry.usersOwning}</Typography>
+        <Typography align="center" sx={{ width: "30%" }}>{props.entry.stockSymbol}</Typography>
+        <Typography align="right" sx={{ width: "40%" }}>
+          {props.entry.stockName.length > 15
+            ? props.entry.stockName.substring(0, 15) + "..."
+            : props.entry.stockName}
         </Typography>
       </Stack>
     </Card>
